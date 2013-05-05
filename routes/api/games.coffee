@@ -7,7 +7,7 @@ exports.new = (req, res) ->
   Add game and setup the initial state
   ###
 
-  console.log 'request user', req.user
+  console.log 'request user', req.user, 'body', req.body
 
   if req.method is "POST"
 
