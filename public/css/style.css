@@ -521,14 +521,15 @@ img.loader {
   display: block;
   width: 2em;
   height: 2em;
-  margin: 0.625em auto; }
+  margin: 0.625em auto;
+  opacity: 0.9; }
 
 /* line 152, ../sass/style.sass */
 div.deck-of-cards {
   position: relative;
   -webkit-perspective: 1000; }
 
-/* line 158, ../sass/style.sass */
+/* line 157, ../sass/style.sass */
 div.card {
   margin: 0.3125em;
   width: 4.25em;
@@ -537,23 +538,23 @@ div.card {
   float: left;
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 0.66s linear, top 0.66s linear, left 0.66s linear, opacity 0.2s linear; }
-  /* line 167, ../sass/style.sass */
+  /* line 166, ../sass/style.sass */
   div.card.flipped-true {
     -webkit-transform: rotatey(180deg); }
-  /* line 169, ../sass/style.sass */
+  /* line 168, ../sass/style.sass */
   div.card:active {
     opacity: 0.65; }
-  /* line 171, ../sass/style.sass */
+  /* line 170, ../sass/style.sass */
   div.card .face {
     -webkit-backface-visibility: hidden;
     position: absolute;
     width: 100%;
     height: 100%; }
-    /* line 177, ../sass/style.sass */
+    /* line 176, ../sass/style.sass */
     div.card .face.back {
       -webkit-transform: rotatey(180deg);
       box-sizing: border-box; }
-    /* line 180, ../sass/style.sass */
+    /* line 179, ../sass/style.sass */
     div.card .face div.design {
       font-size: 50%;
       -webkit-border-radius: 0.25em;
@@ -562,7 +563,7 @@ div.card {
       -o-border-radius: 0.25em;
       border-radius: 0.25em; }
 
-/* line 184, ../sass/style.sass */
+/* line 183, ../sass/style.sass */
 div.high-low-count {
   position: absolute;
   top: 8.125em;
@@ -570,36 +571,36 @@ div.high-low-count {
   background: rgba(255, 255, 255, 0.8);
   width: 3.75em;
   color: #910000; }
-  /* line 191, ../sass/style.sass */
+  /* line 190, ../sass/style.sass */
   div.high-low-count span.title {
     display: block;
     text-align: center;
     font-size: 0.5em;
     font-weight: bold; }
-  /* line 197, ../sass/style.sass */
+  /* line 196, ../sass/style.sass */
   div.high-low-count span.value {
     display: block;
     text-align: center; }
 
-/* line 202, ../sass/style.sass */
+/* line 201, ../sass/style.sass */
 div.hud {
   position: absolute; }
-  /* line 206, ../sass/style.sass */
+  /* line 205, ../sass/style.sass */
   div.hud div.username {
     position: relative;
     top: 0.5em;
     left: 2.5em; }
-    /* line 210, ../sass/style.sass */
+    /* line 209, ../sass/style.sass */
     div.hud div.username span.title {
       font-size: 0.75em; }
-  /* line 213, ../sass/style.sass */
+  /* line 212, ../sass/style.sass */
   div.hud div.avatar {
     float: left;
     position: relative;
     z-index: 2;
     width: 2.5em;
     height: 2.5em; }
-  /* line 220, ../sass/style.sass */
+  /* line 219, ../sass/style.sass */
   div.hud img.avatar {
     -webkit-border-radius: 1.25em;
     -moz-border-radius: 1.25em;
@@ -610,14 +611,14 @@ div.hud {
     width: 100%;
     height: 100%;
     background-color: white; }
-  /* line 227, ../sass/style.sass */
+  /* line 226, ../sass/style.sass */
   div.hud div.info-container {
     float: left;
     position: relative;
     top: 0.625em;
     left: -0.75em;
     width: 5.3125em; }
-    /* line 234, ../sass/style.sass */
+    /* line 233, ../sass/style.sass */
     div.hud div.info-container div.hit-points-container {
       border: 0.0625em solid #9b8566;
       -webkit-border-radius: 0 0.25em 0.25em 0;
@@ -628,7 +629,7 @@ div.hud {
       width: 5.3125em;
       height: 1em;
       background: url(/img/hp-bg.jpg); }
-    /* line 241, ../sass/style.sass */
+    /* line 240, ../sass/style.sass */
     div.hud div.info-container div.hit-points {
       float: left;
       background: #910000;
@@ -642,50 +643,50 @@ div.hud {
       -o-border-radius: 0 0.25em 0.25em 0;
       border-radius: 0 0.25em 0.25em 0;
       -webkit-transition: width 0.36s linear; }
-      /* line 250, ../sass/style.sass */
+      /* line 249, ../sass/style.sass */
       div.hud div.info-container div.hit-points span.value {
         display: block;
         float: right;
         margin: 0 0.375em;
         font-size: 0.6875em; }
-    /* line 256, ../sass/style.sass */
+    /* line 255, ../sass/style.sass */
     div.hud div.info-container div.hand-info {
       float: left;
       clear: both; }
-      /* line 259, ../sass/style.sass */
+      /* line 258, ../sass/style.sass */
       div.hud div.info-container div.hand-info span.value {
         display: block;
         text-indent: 1.375em;
         font-weight: bold;
         font-size: 0.875em; }
 
-/* line 266, ../sass/style.sass */
+/* line 265, ../sass/style.sass */
 div.move-options {
   position: absolute;
   top: 10em;
   left: 6.625em; }
 
-/* line 271, ../sass/style.sass */
+/* line 270, ../sass/style.sass */
 div.player-you {
   top: 18.75em;
   left: 11.875em; }
 
-/* line 275, ../sass/style.sass */
+/* line 274, ../sass/style.sass */
 div.player-opponent {
   top: 1.25em;
   left: 11.875em; }
 
-/* line 279, ../sass/style.sass */
+/* line 278, ../sass/style.sass */
 div.effect {
   position: absolute;
   width: 1.875em;
   height: 1.875em;
   color: #910000; }
-  /* line 284, ../sass/style.sass */
+  /* line 283, ../sass/style.sass */
   div.effect span.value {
     font-size: 1.25em; }
 
-/* line 287, ../sass/style.sass */
+/* line 286, ../sass/style.sass */
 .effect-enter-setup {
   -webkit-transition: all 0.6s ease;
   -moz-transition: all 0.6s ease;
@@ -697,7 +698,7 @@ div.effect {
   -ms-transform: translateY(0);
   -o-transform: translateY(0);
   transform: translateY(0); }
-  /* line 291, ../sass/style.sass */
+  /* line 290, ../sass/style.sass */
   .effect-enter-setup.effect-enter-start {
     -webkit-transform: translateY(-3.125em);
     -moz-transform: translateY(-3.125em);
@@ -706,7 +707,7 @@ div.effect {
     transform: translateY(-3.125em);
     opacity: 1; }
 
-/* line 295, ../sass/style.sass */
+/* line 294, ../sass/style.sass */
 .effect-leave-setup {
   -webkit-transition: all 0.6s ease;
   -moz-transition: all 0.6s ease;
@@ -718,7 +719,7 @@ div.effect {
   -ms-transform: translateY(-3.125em);
   -o-transform: translateY(-3.125em);
   transform: translateY(-3.125em); }
-  /* line 299, ../sass/style.sass */
+  /* line 298, ../sass/style.sass */
   .effect-leave-setup.effect-leave-start {
     -webkit-transform: translateY(-9.375em);
     -moz-transform: translateY(-9.375em);
@@ -727,7 +728,7 @@ div.effect {
     transform: translateY(-9.375em);
     opacity: 0; }
 
-/* line 303, ../sass/style.sass */
+/* line 302, ../sass/style.sass */
 button.quit {
   position: absolute;
   bottom: 0.625em;

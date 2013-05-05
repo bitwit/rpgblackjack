@@ -21,7 +21,7 @@ exports.new = (req, res) ->
     #make a new game
     game = new models.Game()
     game.isMultiplayer = isMultiplayer
-    game.userCount = 1
+    game.userCount = if isMultiplayer then 1 else 2
     game.player1 = req.user._id
     game.save()
 
@@ -41,7 +41,7 @@ exports.me = (req, res) ->
   ###
   Returns any games that the user is currently active in, if any
   ###
-  models.Game.find {isComplete: no, $or:[{player1: req.user._id},{player2: req.user._id}]}, (err, result) ->
+  models.Game.find {userCount: 2, isComplete: no, $or:[{player1: req.user._id},{player2: req.user._id}]}, (err, result) ->
     if err
       return res.json 400,
         success: no
