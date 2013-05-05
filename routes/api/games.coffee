@@ -168,60 +168,62 @@ exports.move = (req, res) ->
           gameLogic.thisPlayer = playerIndex
 
         console.log 'Player making their move'
+        try
+          doesEndRound = gameLogic.makeMove moveType
+          if doesEndRound
+            gameLogic.evaluateResult()
+            gameLogic.dealNextHand()
 
-        doesEndRound = gameLogic.makeMove moveType
-        if doesEndRound
-          gameLogic.evaluateResult()
-          gameLogic.dealNextHand()
+          move = new models.Move()
+          move.gameId = game._id
+          move.userId = req.user._id
+          move.playerId = playerIndex
+          move.moveType = moveType
+          move.save()
 
-        move = new models.Move()
-        move.gameId = game._id
-        move.userId = req.user._id
-        move.playerId = playerIndex
-        move.moveType = moveType
-        move.save()
+          game.moves.push move
 
-        game.moves.push move
+          if not game.isMultiplayer
+            console.log 'Activating AI Logic, not a multiplayer game'
+            ai = new logic.AI()
+            aiThinking = yes
+            while aiThinking is yes
+              if gameLogic.currentRound.playerTurn isnt playerIndex
+                console.log 'AI about to decide and execute a move'
+                aiMove = ai.decide gameLogic.table.playerHands[1], gameLogic.table.playerHands[0]
 
-        if not game.isMultiplayer
-          console.log 'Activating AI Logic, not a multiplayer game'
-          ai = new logic.AI()
-          aiThinking = yes
-          while aiThinking is yes
-            if gameLogic.currentRound.playerTurn isnt playerIndex
-              console.log 'AI about to decide and execute a move'
-              aiMove = ai.decide gameLogic.table.playerHands[1], gameLogic.table.playerHands[0]
+                console.log 'AI decision', aiMove
 
-              console.log 'AI decision', aiMove
+                doesEndRound = gameLogic.makeMove aiMove
+                if doesEndRound
+                  console.log 'AI decision ended the round'
+                  gameLogic.evaluateResult()
+                  gameLogic.dealNextHand()
 
-              doesEndRound = gameLogic.makeMove aiMove
-              if doesEndRound
-                console.log 'AI decision ended the round'
-                gameLogic.evaluateResult()
-                gameLogic.dealNextHand()
+                move = new models.Move()
+                move.gameId = game._id
+                move.userId = null
+                move.playerId = 1
+                move.moveType = moveType
+                move.save()
 
-              move = new models.Move()
-              move.gameId = game._id
-              move.userId = null
-              move.playerId = 1
-              move.moveType = moveType
-              move.save()
+                game.moves.push move
+              else
+                console.log 'AI not deciding -- playerTurn:', gameLogic.currentRound.playerTurn
+                aiThinking = no
 
-              game.moves.push move
-            else
-              console.log 'AI not deciding -- playerTurn:', gameLogic.currentRound.playerTurn
-              aiThinking = no
+          game.data = gameLogic.getSaveData()
 
-        game.data = gameLogic.getSaveData()
+          if gameLogic.state is logic.GAME_STATE.GAME_OVER
+            game.isComplete = yes
 
-        if gameLogic.state is logic.GAME_STATE.GAME_OVER
-          game.isComplete = yes
+          game.save()
 
-        game.save()
-
-        return res.json
-          success: yes
-          payload: null
+          return res.json
+            success: yes
+            payload: null
+        catch e
+          console.log 'error making move', e
 
   else
     return res.json 400,
