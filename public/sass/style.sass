@@ -1,18 +1,24 @@
 @import 'compass'
 @import 'compass/reset'
 
+
 $font-size: 16
 // Your base font-size in pixels
 $em: $font-size / 1em
 // Shorthand for outputting ems
+
+
+$theme-red: #910000
+
+
+@import 'playing-cards.sass'
+
+
 body
   font:
     family: "Helvetica Neue", "Roboto", Helvetica, sans-serif
-  overflow: hidden
-  margin: 0 auto
-  border: 1/$em solid #f2f2f2
-  width: 320/$em
-  height: 400/$em
+
+  color: #FFF
 
 h1, h2
   text-align: center
@@ -28,13 +34,29 @@ h3
     weight: 200
 
 button
+  cursor: pointer
+  border: 0
+  +border-radius(4/$em)
+  +text-shadow(#FFF 1/$em 1/$em -2/$em)
+  color: $theme-red
+  background: url(/img/button.jpg)
+  background-size: 80/$em 40/$em
   display: block
   margin: 10/$em auto
+  width: 80/$em
+  height: 40/$em
   font:
-    size: 20/$em
+    size: 16/$em
+    weight: bold
+  &:active, &:hover
+    opacity: 0.8
 
 div.ng-view
+  overflow: scroll
   position: relative
+  margin: 0 auto
+  background: url(/img/bg-image.jpg) no-repeat
+  background-size: 100% 100%
 
 //
 // Home related
@@ -52,6 +74,7 @@ input.username-input
 div.avatar-picker
   width: 290/$em
   margin: 0 auto
+  overflow: scroll
 
 div.avatar-preview
   cursor: pointer
@@ -82,9 +105,8 @@ div.deck-of-cards
 
 div.card
   margin: 5/$em
-  border: 1/$em solid #d2d2d2
-  width: 40/$em
-  height: 60/$em
+  width: 68/$em
+  height: 95/$em
   position: absolute
   float: left
   -webkit-transform-style: preserve-3d
@@ -100,30 +122,24 @@ div.card
     position: absolute
     width: 100%
     height: 100%
-    &.front
-      .pattern
-        margin: 5%
-        width: 90%
-        height: 90%
-        background: url(/img/card-front-pattern.png) repeat
     &.back
       -webkit-transform: rotatey(180deg)
       box-sizing: border-box
-      color: #545454
-      background: #FFF
-      img.suit
-        display: block
-        float: left
-        width: 20/$em
-        height: 20/$em
-      span.value
-        display: block
-        padding: 20/$em 14/$em
-        font-size: 12/$em
+    div.design
+      font-size: 50%
+      +border-radius(4/$em)
 
 div.hud
   //border: 1/$em solid #e2e2e2
   position: absolute
+
+  div.username
+    position: relative
+    top: 8/$em
+    left: 40/$em
+    span.title
+      font-size: 12/$em
+
   div.avatar
     float: left
     position: relative
@@ -136,22 +152,24 @@ div.hud
     border: 2/$em solid #333
     width: 100%
     height: 100%
+    background-color: #FFF
 
   div.info-container
     float: left
     position: relative
+    top: 10/$em
     left: -12/$em
     width: 85/$em
 
     div.hit-points-container
-      border: 1/$em solid #aaa
+      border: 1/$em solid #9b8566
       +border-radius(0 4/$em 4/$em 0)
       width: 85/$em
       height: 16/$em
 
     div.hit-points
       float: left
-      background: #990000
+      background: $theme-red
       width: 100%
       height: 16/$em
       line-height: 16/$em
@@ -175,15 +193,8 @@ div.hud
 
 div.move-options
   position: absolute
-  top: 180/$em
-  left: 58/$em
-  button.move-option
-    display: block
-    float: left
-    margin: 0 10/$em
-    width: 80/$em
-    height: 40/$em
-    font-size: 16/$em
+  top: 160/$em
+  left: 106/$em
 
 div.player-you
   top: 300/$em

@@ -11,16 +11,20 @@ div.view.lobby-container
       h3 New Game
 
       div.main-options
+        button.new-account(ng-click="newUser()")
+          span.title Create New User
+
         button.coop-computer(ng-click="singlePlayer()")
-          span.title Play against Computer
+          span.title Vs AI
 
       div.available-games
         button.coop-new(ng-click="newRoom()")
-          span.title Play against Human
+          span.title Vs Human
         ul.games-list
           li.game(ng-repeat="game in games")
-            strong.player-name {{game.player1}}
+            strong.player-name {{game.player1.username}}
             button.join(ng-click="joinGame(game)") Join Game
+
 
     div.lobby-room(ng-switch-when="true")
       h2 One moment while a partner joins your game...

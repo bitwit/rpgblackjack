@@ -54,39 +54,382 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block; }
 
-/* line 8, ../sass/style.sass */
-body {
-  font-family: "Helvetica Neue", "Roboto", Helvetica, sans-serif;
+/* line 2, ../sass/playing-cards.sass */
+.sprite {
+  display: inline-block;
   overflow: hidden;
-  margin: 0 auto;
-  border: 0.0625em solid #f2f2f2;
-  width: 20em;
-  height: 25em; }
+  background-repeat: no-repeat;
+  background-image: url(/img/playing-cards.png);
+  background-size: 64em 128em; }
+
+/* line 10, ../sass/playing-cards.sass */
+.card-back {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -106.375em; }
+
+/* line 16, ../sass/playing-cards.sass */
+.clubs-10 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -95.75em; }
+
+/* line 22, ../sass/playing-cards.sass */
+.clubs-2 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -85.125em; }
+
+/* line 28, ../sass/playing-cards.sass */
+.clubs-3 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -74.5em; }
+
+/* line 34, ../sass/playing-cards.sass */
+.clubs-4 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -63.875em; }
+
+/* line 40, ../sass/playing-cards.sass */
+.clubs-5 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -53.5em -53.25em; }
+
+/* line 46, ../sass/playing-cards.sass */
+.clubs-6 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -45.875em -53.25em; }
+
+/* line 52, ../sass/playing-cards.sass */
+.clubs-7 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -38.25em -53.25em; }
+
+/* line 58, ../sass/playing-cards.sass */
+.clubs-8 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -30.625em -53.25em; }
+
+/* line 64, ../sass/playing-cards.sass */
+.clubs-9 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -23em -53.25em; }
+
+/* line 70, ../sass/playing-cards.sass */
+.clubs-A {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -15.375em -53.25em; }
+
+/* line 76, ../sass/playing-cards.sass */
+.clubs-J {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -7.75em -53.25em; }
+
+/* line 82, ../sass/playing-cards.sass */
+.clubs-K {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -53.25em; }
+
+/* line 88, ../sass/playing-cards.sass */
+.clubs-Q {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -53.5em -42.625em; }
+
+/* line 94, ../sass/playing-cards.sass */
+.diamonds-10 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -45.875em -42.625em; }
+
+/* line 100, ../sass/playing-cards.sass */
+.diamonds-2 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -38.25em -42.625em; }
+
+/* line 106, ../sass/playing-cards.sass */
+.diamonds-3 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -30.625em -42.625em; }
+
+/* line 112, ../sass/playing-cards.sass */
+.diamonds-4 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -23em -42.625em; }
+
+/* line 118, ../sass/playing-cards.sass */
+.diamonds-5 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -15.375em -42.625em; }
+
+/* line 124, ../sass/playing-cards.sass */
+.diamonds-6 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -7.75em -42.625em; }
+
+/* line 130, ../sass/playing-cards.sass */
+.diamonds-7 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -42.625em; }
+
+/* line 136, ../sass/playing-cards.sass */
+.diamonds-8 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -53.5em -32em; }
+
+/* line 142, ../sass/playing-cards.sass */
+.diamonds-9 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -45.875em -32em; }
+
+/* line 148, ../sass/playing-cards.sass */
+.diamonds-A {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -38.25em -32em; }
+
+/* line 154, ../sass/playing-cards.sass */
+.diamonds-J {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -30.625em -32em; }
+
+/* line 160, ../sass/playing-cards.sass */
+.diamonds-K {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -23em -32em; }
+
+/* line 166, ../sass/playing-cards.sass */
+.diamonds-Q {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -15.375em -32em; }
+
+/* line 172, ../sass/playing-cards.sass */
+.hearts-10 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -7.75em -32em; }
+
+/* line 178, ../sass/playing-cards.sass */
+.hearts-2 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -32em; }
+
+/* line 184, ../sass/playing-cards.sass */
+.hearts-3 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -53.5em -21.375em; }
+
+/* line 190, ../sass/playing-cards.sass */
+.hearts-4 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -45.875em -21.375em; }
+
+/* line 196, ../sass/playing-cards.sass */
+.hearts-5 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -38.25em -21.375em; }
+
+/* line 202, ../sass/playing-cards.sass */
+.hearts-6 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -30.625em -21.375em; }
+
+/* line 208, ../sass/playing-cards.sass */
+.hearts-7 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -23em -21.375em; }
+
+/* line 214, ../sass/playing-cards.sass */
+.hearts-8 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -15.375em -21.375em; }
+
+/* line 220, ../sass/playing-cards.sass */
+.hearts-9 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -7.75em -21.375em; }
+
+/* line 226, ../sass/playing-cards.sass */
+.hearts-A {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -21.375em; }
+
+/* line 232, ../sass/playing-cards.sass */
+.hearts-J {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -53.5em -10.75em; }
+
+/* line 238, ../sass/playing-cards.sass */
+.hearts-K {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -45.875em -10.75em; }
+
+/* line 244, ../sass/playing-cards.sass */
+.hearts-Q {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -38.25em -10.75em; }
+
+/* line 250, ../sass/playing-cards.sass */
+.spades-10 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -30.625em -10.75em; }
+
+/* line 256, ../sass/playing-cards.sass */
+.spades-2 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -23em -10.75em; }
+
+/* line 262, ../sass/playing-cards.sass */
+.spades-3 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -15.375em -10.75em; }
+
+/* line 268, ../sass/playing-cards.sass */
+.spades-4 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -7.75em -10.75em; }
+
+/* line 274, ../sass/playing-cards.sass */
+.spades-5 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -10.75em; }
+
+/* line 280, ../sass/playing-cards.sass */
+.spades-6 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -53.5em -0.125em; }
+
+/* line 286, ../sass/playing-cards.sass */
+.spades-7 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -45.875em -0.125em; }
+
+/* line 292, ../sass/playing-cards.sass */
+.spades-8 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -38.25em -0.125em; }
+
+/* line 298, ../sass/playing-cards.sass */
+.spades-9 {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -30.625em -0.125em; }
+
+/* line 304, ../sass/playing-cards.sass */
+.spades-A {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -23em -0.125em; }
+
+/* line 310, ../sass/playing-cards.sass */
+.spades-J {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -15.375em -0.125em; }
+
+/* line 316, ../sass/playing-cards.sass */
+.spades-K {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -7.75em -0.125em; }
+
+/* line 322, ../sass/playing-cards.sass */
+.spades-Q {
+  width: 7.5em;
+  height: 10.5em;
+  background-position: -0.125em -0.125em; }
 
 /* line 17, ../sass/style.sass */
+body {
+  font-family: "Helvetica Neue", "Roboto", Helvetica, sans-serif;
+  color: white; }
+
+/* line 23, ../sass/style.sass */
 h1, h2 {
   text-align: center;
   font-size: 1.5em;
   font-weight: 500; }
 
-/* line 23, ../sass/style.sass */
+/* line 29, ../sass/style.sass */
 h3 {
   margin: 0.625em 0;
   text-align: center;
   font-size: 1.25em;
   font-weight: 200; }
 
-/* line 30, ../sass/style.sass */
+/* line 36, ../sass/style.sass */
 button {
+  cursor: pointer;
+  border: 0;
+  -webkit-border-radius: 0.25em;
+  -moz-border-radius: 0.25em;
+  -ms-border-radius: 0.25em;
+  -o-border-radius: 0.25em;
+  border-radius: 0.25em;
+  text-shadow: white 0.0625em 0.0625em -0.125em;
+  color: #910000;
+  background: url(/img/button.jpg);
+  background-size: 5em 2.5em;
   display: block;
   margin: 0.625em auto;
-  font-size: 1.25em; }
+  width: 5em;
+  height: 2.5em;
+  font-size: 1em;
+  font-weight: bold; }
+  /* line 51, ../sass/style.sass */
+  button:active, button:hover {
+    opacity: 0.8; }
 
-/* line 36, ../sass/style.sass */
+/* line 54, ../sass/style.sass */
 div.ng-view {
-  position: relative; }
+  overflow: scroll;
+  position: relative;
+  margin: 0 auto;
+  background: url(/img/bg-image.jpg) no-repeat;
+  background-size: 100% 100%; }
 
-/* line 43, ../sass/style.sass */
+/* line 65, ../sass/style.sass */
 input.username-input {
   display: block;
   width: 15em;
@@ -95,12 +438,13 @@ input.username-input {
   font-size: 1.125em;
   font-weight: bold; }
 
-/* line 52, ../sass/style.sass */
+/* line 74, ../sass/style.sass */
 div.avatar-picker {
   width: 18.125em;
-  margin: 0 auto; }
+  margin: 0 auto;
+  overflow: scroll; }
 
-/* line 56, ../sass/style.sass */
+/* line 79, ../sass/style.sass */
 div.avatar-preview {
   cursor: pointer;
   float: left;
@@ -108,78 +452,74 @@ div.avatar-preview {
   border: 0.0625em solid #e2e2e2;
   width: 5.5em;
   height: 5.5em; }
-  /* line 63, ../sass/style.sass */
+  /* line 86, ../sass/style.sass */
   div.avatar-preview:nth-child(3n + 1) {
     margin-right: 0; }
 
-/* line 66, ../sass/style.sass */
+/* line 89, ../sass/style.sass */
 img.avatar-option {
   display: block;
   width: 5.5em;
   height: 5.5em; }
 
-/* line 77, ../sass/style.sass */
+/* line 100, ../sass/style.sass */
 div.deck-of-cards {
   position: relative;
   -webkit-perspective: 1000; }
 
-/* line 83, ../sass/style.sass */
+/* line 106, ../sass/style.sass */
 div.card {
   margin: 0.3125em;
-  border: 0.0625em solid #d2d2d2;
-  width: 2.5em;
-  height: 3.75em;
+  width: 4.25em;
+  height: 5.9375em;
   position: absolute;
   float: left;
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 0.66s linear, top 0.66s linear, left 0.66s linear, opacity 0.2s linear; }
-  /* line 93, ../sass/style.sass */
+  /* line 115, ../sass/style.sass */
   div.card.flipped-true {
     -webkit-transform: rotatey(180deg); }
-  /* line 95, ../sass/style.sass */
+  /* line 117, ../sass/style.sass */
   div.card:active {
     opacity: 0.65; }
-  /* line 97, ../sass/style.sass */
+  /* line 119, ../sass/style.sass */
   div.card .face {
     -webkit-backface-visibility: hidden;
     position: absolute;
     width: 100%;
     height: 100%; }
-    /* line 104, ../sass/style.sass */
-    div.card .face.front .pattern {
-      margin: 5%;
-      width: 90%;
-      height: 90%;
-      background: url(/img/card-front-pattern.png) repeat; }
-    /* line 109, ../sass/style.sass */
+    /* line 125, ../sass/style.sass */
     div.card .face.back {
       -webkit-transform: rotatey(180deg);
-      box-sizing: border-box;
-      color: #545454;
-      background: white; }
-      /* line 114, ../sass/style.sass */
-      div.card .face.back img.suit {
-        display: block;
-        float: left;
-        width: 1.25em;
-        height: 1.25em; }
-      /* line 119, ../sass/style.sass */
-      div.card .face.back span.value {
-        display: block;
-        padding: 1.25em 0.875em;
-        font-size: 0.75em; }
+      box-sizing: border-box; }
+    /* line 128, ../sass/style.sass */
+    div.card .face div.design {
+      font-size: 50%;
+      -webkit-border-radius: 0.25em;
+      -moz-border-radius: 0.25em;
+      -ms-border-radius: 0.25em;
+      -o-border-radius: 0.25em;
+      border-radius: 0.25em; }
 
-/* line 124, ../sass/style.sass */
+/* line 132, ../sass/style.sass */
 div.hud {
   position: absolute; }
-  /* line 127, ../sass/style.sass */
+  /* line 136, ../sass/style.sass */
+  div.hud div.username {
+    position: relative;
+    top: 0.5em;
+    left: 2.5em; }
+    /* line 140, ../sass/style.sass */
+    div.hud div.username span.title {
+      font-size: 0.75em; }
+  /* line 143, ../sass/style.sass */
   div.hud div.avatar {
     float: left;
     position: relative;
     z-index: 2;
     width: 2.5em;
     height: 2.5em; }
-  /* line 134, ../sass/style.sass */
+  /* line 150, ../sass/style.sass */
   div.hud img.avatar {
     -webkit-border-radius: 1.25em;
     -moz-border-radius: 1.25em;
@@ -188,16 +528,18 @@ div.hud {
     border-radius: 1.25em;
     border: 0.125em solid #333333;
     width: 100%;
-    height: 100%; }
-  /* line 140, ../sass/style.sass */
+    height: 100%;
+    background-color: white; }
+  /* line 157, ../sass/style.sass */
   div.hud div.info-container {
     float: left;
     position: relative;
+    top: 0.625em;
     left: -0.75em;
     width: 5.3125em; }
-    /* line 146, ../sass/style.sass */
+    /* line 164, ../sass/style.sass */
     div.hud div.info-container div.hit-points-container {
-      border: 0.0625em solid #aaaaaa;
+      border: 0.0625em solid #9b8566;
       -webkit-border-radius: 0 0.25em 0.25em 0;
       -moz-border-radius: 0 0.25em 0.25em 0;
       -ms-border-radius: 0 0.25em 0.25em 0;
@@ -205,10 +547,10 @@ div.hud {
       border-radius: 0 0.25em 0.25em 0;
       width: 5.3125em;
       height: 1em; }
-    /* line 152, ../sass/style.sass */
+    /* line 170, ../sass/style.sass */
     div.hud div.info-container div.hit-points {
       float: left;
-      background: #990000;
+      background: #910000;
       width: 100%;
       height: 1em;
       line-height: 1em;
@@ -218,43 +560,35 @@ div.hud {
       -ms-border-radius: 0 0.25em 0.25em 0;
       -o-border-radius: 0 0.25em 0.25em 0;
       border-radius: 0 0.25em 0.25em 0; }
-      /* line 160, ../sass/style.sass */
+      /* line 178, ../sass/style.sass */
       div.hud div.info-container div.hit-points span.value {
         display: block;
         float: right;
         margin: 0 0.375em;
         font-size: 0.6875em; }
-    /* line 166, ../sass/style.sass */
+    /* line 184, ../sass/style.sass */
     div.hud div.info-container div.hand-info {
       float: left;
       clear: both; }
-      /* line 169, ../sass/style.sass */
+      /* line 187, ../sass/style.sass */
       div.hud div.info-container div.hand-info span.value {
         display: block;
         text-indent: 1.375em;
         font-weight: bold;
         font-size: 0.875em; }
 
-/* line 176, ../sass/style.sass */
+/* line 194, ../sass/style.sass */
 div.move-options {
   position: absolute;
-  top: 11.25em;
-  left: 3.625em; }
-  /* line 180, ../sass/style.sass */
-  div.move-options button.move-option {
-    display: block;
-    float: left;
-    margin: 0 0.625em;
-    width: 5em;
-    height: 2.5em;
-    font-size: 1em; }
+  top: 10em;
+  left: 6.625em; }
 
-/* line 188, ../sass/style.sass */
+/* line 199, ../sass/style.sass */
 div.player-you {
   top: 18.75em;
   left: 11.875em; }
 
-/* line 192, ../sass/style.sass */
+/* line 203, ../sass/style.sass */
 div.player-opponent {
   top: 1.25em;
   left: 11.875em; }

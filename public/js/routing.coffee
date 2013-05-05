@@ -34,6 +34,14 @@ appModule.config ['$routeProvider', ($routeProvider) ->
       controller: 'GameController'
       templateUrl: '/template/game'
       resolve:
+        loginStatus: ["$q", "sharedApplication", ($q, sharedApp) ->
+          deferred = $q.defer()
+          if localStorage.userId?
+            deferred.resolve yes
+          else
+            deferred.reject 'not signed up yet'
+            sharedApp.changePath '/home/'
+        ]
         gameModel: ["$q", "$route", "$http", "sharedApplication", ($q, $route, $http, sharedApp) ->
           deferred = $q.defer()
           gameId = $route.current.params.gameId
@@ -42,6 +50,7 @@ appModule.config ['$routeProvider', ($routeProvider) ->
             url: "/api/games/get/#{gameId}/"
             headers:
               "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+              "Content-Type": "application/json;charset=UTF-8"
           )
             .success (response) ->
               if response.payload.isComplete

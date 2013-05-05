@@ -5,6 +5,7 @@ exports.new = (req, res) ->
   console.log 'query', req.query, 'params',req.params
 
   username = req.body["username"]
+  avatar = req.body["avatar"]
   if !username?
     return res.json 400,
       success: no
@@ -12,6 +13,7 @@ exports.new = (req, res) ->
 
   user = new models.User()
   user.username = username
+  user.avatar = avatar
   user.save()
 
   res.json

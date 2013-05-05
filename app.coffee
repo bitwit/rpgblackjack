@@ -37,7 +37,7 @@ if app.get('env') is 'development'
 ###
 auth = express.basicAuth (user, pass, callback) ->
   models.User.findOne {'_id': user}, (err, result) ->
-    if err?
+    if err? or result is null
       callback err, null
     else
       callback null, result

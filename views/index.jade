@@ -5,7 +5,7 @@ html
     link(rel='stylesheet', href='/css/style.css')
     meta(name="viewport",content="width=device-width")
   body(ng-app="appModule", ng-controller="AppController")
-    div.ng-view(ng-view)
+    div.ng-view(ng-view, ng-style="windowSize()")
 
   footer
 

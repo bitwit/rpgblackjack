@@ -12,6 +12,27 @@ appModule = angular.module 'appModule', ['ngResource']
 
 appModule.controller 'AppController', ['$scope', '$timeout', 'sharedApplication', ($scope, $timeout, sharedApp) ->
   console.log 'AppController setup'
+
+  $scope.windowSize = ->
+    windowWidth = window.innerWidth
+    windowHeight = window.innerHeight
+
+    height = windowHeight #if windowWidth > windowHeight then windowWidth else windowHeight
+    width = windowWidth
+
+    size = 1.0
+    if width > 320
+      increase = (width / 320) - 1
+      increase /= 3 #only increase by 33% of the difference
+      size += increase
+    size = Math.round(size * 100)
+
+
+    return {
+      "font-size": size + "%"
+      height: height + "px"
+      width: width + "px"
+    }
 ]
 
 appModule.controller 'HomeController', ['$scope', '$http', 'sharedApplication', ($scope, $http, sharedApp) ->
@@ -36,6 +57,8 @@ appModule.controller 'HomeController', ['$scope', '$http', 'sharedApplication', 
       data:
         username: $scope.username
         avatar: $scope.avatar
+      headers:
+        "Content-Type": "application/json;charset=UTF-8"
     )
     .error (response) ->
       console.log 'error while trying to create new user', response
@@ -45,6 +68,7 @@ appModule.controller 'HomeController', ['$scope', '$http', 'sharedApplication', 
       localStorage.username = response.payload.username
       $http.defaults.headers =
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
 
       sharedApp.changePath '/lobby/'
 
@@ -71,6 +95,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
       url: "/api/games/rooms/"
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
     )
     .success (response) ->
       $scope.games = response.payload
@@ -82,6 +107,10 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
       ###
 
   $scope.refreshRooms() #call immediately
+
+  $scope.newUser = ->
+    delete localStorage.userId
+    sharedApp.changePath '/'
 
   $scope.singlePlayer = ->
     $scope.createNewGame false
@@ -98,6 +127,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
       url: "/api/games/cancel/#{$scope.waitingGameId}"
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
     )
       .success (response) ->
         $scope.isInRoom = false
@@ -116,6 +146,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
       url: "/api/games/join/#{game._id}"
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
     )
     .success (response) ->
       sharedApp.changePath "/game/#{response.payload._id}"
@@ -135,6 +166,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
       url: "/api/games/get/#{$scope.waitingGameId}"
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
     )
     .success (response) ->
       console.log 'lobby checking game state', response
@@ -159,7 +191,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
         isMultiplayer: isMultiplayer
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
-        "Content-Type" : "application/json;charset=UTF-8"
+        "Content-Type": "application/json;charset=UTF-8"
     )
     .success (response) ->
       if not isMultiplayer
@@ -197,10 +229,13 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
     catch e
       $scope.lastMoveId = 0
 
-    if localStorage.userId is gameModel.player1
+    try
+      if localStorage.userId is gameModel.player1._id.toString()
+        playerIndex = 0
+      else if localStorage.userId is gameModel.player2._id.toString() #can be empty
+        playerIndex = 1
+    catch e
       playerIndex = 0
-    else if localStorage.userId is gameModel.player2
-      playerIndex = 1
 
     $scope.game.thisPlayer = playerIndex
     console.log 'initialized game', $scope.game
@@ -236,6 +271,7 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
       url: "/api/games/state/#{gameModel._id}?since=#{$scope.lastMoveId}"
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
     )
       .error (response) ->
         console.error 'error while checking game state'
@@ -269,46 +305,6 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
     $scope.startChecker()
 
 
-  ###
-   View related responses
-  ###
-
-  $scope.cardStyles = (card) ->
-    if !card.currentPile?
-      return null
-    else
-      card.currentPile.cardPosition card
-
-  $scope.hpBarStyles = (isMe) ->
-    if isMe
-      player = $scope.game.players[0]
-    else
-      player = $scope.game.players[1]
-    return {
-      width: Math.round(100 * (player.hp/player.maxHp) ) + "%"
-    }
-
-  $scope.playerHp = (isMe) ->
-    if isMe
-      player = $scope.game.players[0]
-    else
-      player = $scope.game.players[1]
-
-    return player.getHp()
-
-  $scope.handValue = (isMe) ->
-    if isMe
-      hand = $scope.game.table.playerHands[0]
-    else
-      hand = $scope.game.table.playerHands[1]
-
-    handValue = hand.value()
-
-    if handValue > 21
-      handValue = "BUST"
-
-    return handValue
-
   $scope.playerHit = ->
     #$scope.game.makeMove MOVE_TYPE.HIT
     $scope.sendMoveToServer MOVE_TYPE.HIT
@@ -329,11 +325,123 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
         move: move
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
     )
-    .error (response) ->
+      .error (response) ->
         console.log 'error while moving', response
-    .success (response) ->
+      .success (response) ->
         console.log 'move success', response
+
+
+  ###
+   View related responses
+  ###
+
+  $scope.cardStyles = (card) ->
+    if !card.currentPile?
+      return null
+    else
+      fontSize = 16
+      switch card.currentPile.name
+        when "used"
+          return {
+          top: 160 / fontSize + "em"
+          left: 230 / fontSize + "em"
+          }
+
+        when "unused"
+          return {
+          top: 160 / fontSize + "em"
+          left: 10 / fontSize + "em"
+          }
+
+        when "player1"
+          if $scope.game.thisPlayer is 0
+            #first player's own hand
+            position =
+              top: 290
+              left: 115
+          else
+            position =
+              top: 10
+              left: 115
+
+        when "player2"
+          if $scope.game.thisPlayer is 0
+            #second player's own hand
+            position =
+              top: 10
+              left: 115
+          else
+            position =
+              top: 290
+              left: 115
+        else
+          return null
+
+      for pileCard, i in card.currentPile.cards
+          if pileCard is card
+            return {
+              "top": position.top/fontSize + "em"
+              "left": (position.left + (i * 30 - card.currentPile.cards.length * 25))/fontSize + "em"
+              "z-index": i
+            }
+
+  $scope.hpBarStyles = (isMe) ->
+    if isMe
+      player = $scope.game.players[$scope.game.thisPlayer]
+    else
+      index = if $scope.game.thisPlayer is 1 then 0 else 1
+      player = $scope.game.players[index]
+    return {
+      width: Math.round(100 * (player.hp/player.maxHp) ) + "%"
+    }
+
+  $scope.playerHp = (isMe) ->
+    if isMe
+      player = $scope.game.players[$scope.game.thisPlayer]
+    else
+      index = if $scope.game.thisPlayer is 1 then 0 else 1
+      player = $scope.game.players[index]
+
+    return player.getHp()
+
+  $scope.handValue = (isMe) ->
+
+    if isMe
+      hand = $scope.game.table.playerHands[$scope.game.thisPlayer]
+    else
+      index = if $scope.game.thisPlayer is 1 then 0 else 1
+      hand = $scope.game.table.playerHands[index]
+
+    handValue = hand.value()
+
+    if handValue > 21
+      handValue = "BUST"
+
+    return handValue
+
+  $scope.avatar = (isMe) ->
+    if isMe
+      index = if $scope.game.thisPlayer is 1 then "player2" else "player1"
+    else
+      if not gameModel.isMultiplayer
+        return "/img/avatar-1.png"
+      index = if $scope.game.thisPlayer is 1 then "player1" else "player2"
+
+    return "/img/" + gameModel[index].avatar
+
+  $scope.username = (isMe) ->
+    if isMe
+      index = if $scope.game.thisPlayer is 1 then "player2" else "player1"
+    else
+      if not gameModel.isMultiplayer
+        return "Computer"
+      index = if $scope.game.thisPlayer is 1 then "player1" else "player2"
+
+    return gameModel[index].username
+
+
 
 
 ]

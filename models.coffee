@@ -15,8 +15,8 @@ attributes =
   createdAt: {"type": Date, "default": Date.now}
   data: Schema.Types.Mixed
   userCount: Number
-  player1: Schema.Types.ObjectId
-  player2: {"type": Schema.Types.ObjectId, "default": null}
+  player1: {"type": Schema.Types.ObjectId, "ref": "User"}
+  player2: {"type": Schema.Types.ObjectId, "ref": "User", "default": null}
   isMultiplayer: Boolean
   isComplete: Boolean
   isAborted: Boolean

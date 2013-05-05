@@ -55,10 +55,13 @@ exports.rooms = (req, res) ->
   ###
   Returns a list of available rooms to the user
   ###
-  models.Game.find {isMultiplayer: yes, userCount: 1}, (err, result) ->
-    return res.json
-      success: yes
-      payload: result
+  models.Game
+    .find({isMultiplayer: yes, userCount: 1})
+    .populate('player1')
+    .exec (err, result) ->
+      return res.json
+        success: yes
+        payload: result
 
 
 exports.join = (req, res) ->
@@ -97,6 +100,8 @@ exports.get = (req, res) ->
 
   models.Game
     .findOne({_id:gameId, $or:[{player1: req.user._id},{player2: req.user._id}]})
+    .populate('player1')
+    .populate('player2')
     .populate('moves')
     .exec (err, result) ->
       if err

@@ -87,32 +87,29 @@ Game = (function() {
       return;
     }
     this.moves.push(new Move(this.currentRound.playerTurn, move));
-    this.currentRound.makeMove(move);
     switch (move) {
       case MOVE_TYPE.HIT:
         card = this.table.unusedPile.takeNextCard();
         playerHand = this.table.playerHands[this.currentRound.playerTurn];
         playerHand.push(card);
         if (playerHand.value() > 21) {
-          this.makeMove(MOVE_TYPE.BUST);
+          this.currentRound.endPlayerTurn();
         }
         break;
       case MOVE_TYPE.STAY:
-      case MOVE_TYPE.BUST:
-        if (this.currentRound.isOver) {
-          console.log('Battle Round Is Over');
-          this.evaluateResult();
-          this.dealNextHand();
-        } else {
-          this.state = GAME_STATE.ATTACKER_MOVING;
-          attackerHand = this.table.playerHands[this.currentRound.playerTurn];
-          attackerHand.reveal();
-        }
+        this.currentRound.endPlayerTurn();
         break;
       default:
         null;
     }
-    return console.log('moves so far', this.moves);
+    if (this.currentRound.isOver) {
+      return true;
+    } else {
+      this.state = GAME_STATE.ATTACKER_MOVING;
+      attackerHand = this.table.playerHands[this.currentRound.playerTurn];
+      attackerHand.reveal();
+      return false;
+    }
   };
 
   Game.prototype.evaluateResult = function() {
@@ -212,16 +209,7 @@ CardPile = (function() {
 
   function CardPile() {
     this.cards = [];
-    this.positionTop = 0;
-    this.positionLeft = 0;
   }
-
-  CardPile.prototype.cardPosition = function(card) {
-    return {
-      top: this.positionTop,
-      left: this.positionLeft
-    };
-  };
 
   CardPile.prototype.shuffle = function() {
     /*
@@ -293,8 +281,7 @@ UnusedCardPile = (function(_super) {
 
   function UnusedCardPile() {
     UnusedCardPile.__super__.constructor.call(this);
-    this.positionTop = 160 + "px";
-    this.positionLeft = 0;
+    this.name = "unused";
   }
 
   return UnusedCardPile;
@@ -307,8 +294,7 @@ UsedCardPile = (function(_super) {
 
   function UsedCardPile() {
     UsedCardPile.__super__.constructor.call(this);
-    this.positionTop = 160 + "px";
-    this.positionLeft = 270 + "px";
+    this.name = "used";
   }
 
   UsedCardPile.prototype.push = function(card) {
@@ -324,10 +310,10 @@ PlayerCardPile = (function(_super) {
 
   __extends(PlayerCardPile, _super);
 
-  function PlayerCardPile(positionTop, positionLeft) {
+  function PlayerCardPile(name, index) {
+    this.name = name;
+    this.index = index;
     PlayerCardPile.__super__.constructor.call(this);
-    this.positionTop = positionTop;
-    this.positionLeft = positionLeft;
     this.isRevealingAll = true;
   }
 
@@ -386,21 +372,6 @@ PlayerCardPile = (function(_super) {
       }
     }
     return handValue;
-  };
-
-  PlayerCardPile.prototype.cardPosition = function(card) {
-    var i, pileCard, _i, _len, _ref;
-    _ref = this.cards;
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      pileCard = _ref[i];
-      if (pileCard === card) {
-        return {
-          "top": this.positionTop + "px",
-          "left": this.positionLeft + (i * 30 - this.cards.length * 15) + "px",
-          "z-index": i
-        };
-      }
-    }
   };
 
   return PlayerCardPile;
@@ -472,18 +443,14 @@ BattleRound = (function() {
     this.isOver = false;
     this.playerTurn = playerTurn;
     this.playerCompleteStatuses = [false, false];
-    this.movesMade = [];
   }
 
-  BattleRound.prototype.makeMove = function(move) {
-    this.movesMade.push(move);
-    if (move === MOVE_TYPE.STAY || move === MOVE_TYPE.BUST) {
-      this.playerCompleteStatuses[this.playerTurn] = true;
-      if (this.playerCompleteStatuses[0] && this.playerCompleteStatuses[1]) {
-        return this.isOver = true;
-      } else {
-        return this.playerTurn = Number(!this.playerTurn);
-      }
+  BattleRound.prototype.endPlayerTurn = function() {
+    this.playerCompleteStatuses[this.playerTurn] = true;
+    if (this.playerCompleteStatuses[0] && this.playerCompleteStatuses[1]) {
+      return this.isOver = true;
+    } else {
+      return this.playerTurn = Number(!this.playerTurn);
     }
   };
 
@@ -491,16 +458,14 @@ BattleRound = (function() {
     return {
       isOver: this.isOver,
       playerTurn: this.playerTurn,
-      playerCompleteStatuses: this.playerCompleteStatuses,
-      movesMade: this.movesMade
+      playerCompleteStatuses: this.playerCompleteStatuses
     };
   };
 
   BattleRound.prototype.loadData = function(data) {
     this.isOver = data.isOver;
     this.playerTurn = data.playerTurn;
-    this.playerCompleteStatuses = data.playerCompleteStatuses;
-    return this.movesMade = data.movesMade;
+    return this.playerCompleteStatuses = data.playerCompleteStatuses;
   };
 
   return BattleRound;
@@ -540,7 +505,7 @@ Table = (function() {
     this.allCards = [];
     this.unusedPile = new UnusedCardPile();
     this.usedPile = new UsedCardPile();
-    this.playerHands = [new PlayerCardPile(300, 100), new PlayerCardPile(40, 100)];
+    this.playerHands = [new PlayerCardPile("player1", 0), new PlayerCardPile("player2", 1)];
     this.playerInventories = [new PlayerInventoryCardPile(), new PlayerInventoryCardPile()];
     _ref = this.suits;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -612,7 +577,26 @@ appModule = angular.module('appModule', ['ngResource']);
 
 appModule.controller('AppController', [
   '$scope', '$timeout', 'sharedApplication', function($scope, $timeout, sharedApp) {
-    return console.log('AppController setup');
+    console.log('AppController setup');
+    return $scope.windowSize = function() {
+      var height, increase, size, width, windowHeight, windowWidth;
+      windowWidth = window.innerWidth;
+      windowHeight = window.innerHeight;
+      height = windowHeight;
+      width = windowWidth;
+      size = 1.0;
+      if (width > 320) {
+        increase = (width / 320) - 1;
+        increase /= 3;
+        size += increase;
+      }
+      size = Math.round(size * 100);
+      return {
+        "font-size": size + "%",
+        height: height + "px",
+        width: width + "px"
+      };
+    };
   }
 ]);
 
@@ -638,6 +622,9 @@ appModule.controller('HomeController', [
         data: {
           username: $scope.username,
           avatar: $scope.avatar
+        },
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).error(function(response) {
         return console.log('error while trying to create new user', response);
@@ -646,7 +633,8 @@ appModule.controller('HomeController', [
         localStorage.userId = response.payload._id;
         localStorage.username = response.payload.username;
         $http.defaults.headers = {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         };
         return sharedApp.changePath('/lobby/');
       });
@@ -673,7 +661,8 @@ appModule.controller('LobbyController', [
         method: "GET",
         url: "/api/games/rooms/",
         headers: {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).success(function(response) {
         return $scope.games = response.payload;
@@ -687,6 +676,10 @@ appModule.controller('LobbyController', [
       });
     };
     $scope.refreshRooms();
+    $scope.newUser = function() {
+      delete localStorage.userId;
+      return sharedApp.changePath('/');
+    };
     $scope.singlePlayer = function() {
       return $scope.createNewGame(false);
     };
@@ -702,7 +695,8 @@ appModule.controller('LobbyController', [
         method: "GET",
         url: "/api/games/cancel/" + $scope.waitingGameId,
         headers: {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).success(function(response) {
         $scope.isInRoom = false;
@@ -720,7 +714,8 @@ appModule.controller('LobbyController', [
         method: "POST",
         url: "/api/games/join/" + game._id,
         headers: {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).success(function(response) {
         return sharedApp.changePath("/game/" + response.payload._id);
@@ -741,7 +736,8 @@ appModule.controller('LobbyController', [
         method: "GET",
         url: "/api/games/get/" + $scope.waitingGameId,
         headers: {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).success(function(response) {
         console.log('lobby checking game state', response);
@@ -803,10 +799,14 @@ appModule.controller('GameController', [
       } catch (e) {
         $scope.lastMoveId = 0;
       }
-      if (localStorage.userId === gameModel.player1) {
+      try {
+        if (localStorage.userId === gameModel.player1._id.toString()) {
+          playerIndex = 0;
+        } else if (localStorage.userId === gameModel.player2._id.toString()) {
+          playerIndex = 1;
+        }
+      } catch (e) {
         playerIndex = 0;
-      } else if (localStorage.userId === gameModel.player2) {
-        playerIndex = 1;
       }
       $scope.game.thisPlayer = playerIndex;
       return console.log('initialized game', $scope.game);
@@ -839,7 +839,8 @@ appModule.controller('GameController', [
         method: "GET",
         url: "/api/games/state/" + gameModel._id + "?since=" + $scope.lastMoveId,
         headers: {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).error(function(response) {
         console.error('error while checking game state');
@@ -863,58 +864,16 @@ appModule.controller('GameController', [
       });
     };
     $scope.applyNextQueuedMove = function() {
-      var move;
-      console.log('queuedMoves', $scope.queuedMoves);
+      var doesEndRound, move;
       move = $scope.queuedMoves.shift();
-      console.log('performing move', move);
-      $scope.game.makeMove(move.moveType);
+      doesEndRound = $scope.game.makeMove(move.moveType);
+      if (doesEndRound) {
+        $scope.game.evaluateResult();
+        $scope.game.dealNextHand();
+      }
       $scope.moves.push(move);
       $scope.isChecking = false;
       return $scope.startChecker();
-    };
-    /*
-     View related responses
-    */
-
-    $scope.cardStyles = function(card) {
-      if (card.currentPile == null) {
-        return null;
-      } else {
-        return card.currentPile.cardPosition(card);
-      }
-    };
-    $scope.hpBarStyles = function(isMe) {
-      var player;
-      if (isMe) {
-        player = $scope.game.players[0];
-      } else {
-        player = $scope.game.players[1];
-      }
-      return {
-        width: Math.round(100 * (player.hp / player.maxHp)) + "%"
-      };
-    };
-    $scope.playerHp = function(isMe) {
-      var player;
-      if (isMe) {
-        player = $scope.game.players[0];
-      } else {
-        player = $scope.game.players[1];
-      }
-      return player.getHp();
-    };
-    $scope.handValue = function(isMe) {
-      var hand, handValue;
-      if (isMe) {
-        hand = $scope.game.table.playerHands[0];
-      } else {
-        hand = $scope.game.table.playerHands[1];
-      }
-      handValue = hand.value();
-      if (handValue > 21) {
-        handValue = "BUST";
-      }
-      return handValue;
     };
     $scope.playerHit = function() {
       return $scope.sendMoveToServer(MOVE_TYPE.HIT);
@@ -925,7 +884,7 @@ appModule.controller('GameController', [
     $scope.playerSplit = function() {
       return $scope.sendMoveToServer(MOVE_TYPE.SPLIT);
     };
-    return $scope.sendMoveToServer = function(move) {
+    $scope.sendMoveToServer = function(move) {
       return $http({
         url: '/api/games/move/' + gameModel._id,
         method: 'POST',
@@ -933,13 +892,137 @@ appModule.controller('GameController', [
           move: move
         },
         headers: {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).error(function(response) {
         return console.log('error while moving', response);
       }).success(function(response) {
         return console.log('move success', response);
       });
+    };
+    /*
+     View related responses
+    */
+
+    $scope.cardStyles = function(card) {
+      var fontSize, i, pileCard, position, _i, _len, _ref;
+      if (card.currentPile == null) {
+        return null;
+      } else {
+        fontSize = 16;
+        switch (card.currentPile.name) {
+          case "used":
+            return {
+              top: 160 / fontSize + "em",
+              left: 230 / fontSize + "em"
+            };
+          case "unused":
+            return {
+              top: 160 / fontSize + "em",
+              left: 10 / fontSize + "em"
+            };
+          case "player1":
+            if ($scope.game.thisPlayer === 0) {
+              position = {
+                top: 290,
+                left: 115
+              };
+            } else {
+              position = {
+                top: 10,
+                left: 115
+              };
+            }
+            break;
+          case "player2":
+            if ($scope.game.thisPlayer === 0) {
+              position = {
+                top: 10,
+                left: 115
+              };
+            } else {
+              position = {
+                top: 290,
+                left: 115
+              };
+            }
+            break;
+          default:
+            return null;
+        }
+        _ref = card.currentPile.cards;
+        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+          pileCard = _ref[i];
+          if (pileCard === card) {
+            return {
+              "top": position.top / fontSize + "em",
+              "left": (position.left + (i * 30 - card.currentPile.cards.length * 25)) / fontSize + "em",
+              "z-index": i
+            };
+          }
+        }
+      }
+    };
+    $scope.hpBarStyles = function(isMe) {
+      var index, player;
+      if (isMe) {
+        player = $scope.game.players[$scope.game.thisPlayer];
+      } else {
+        index = $scope.game.thisPlayer === 1 ? 0 : 1;
+        player = $scope.game.players[index];
+      }
+      return {
+        width: Math.round(100 * (player.hp / player.maxHp)) + "%"
+      };
+    };
+    $scope.playerHp = function(isMe) {
+      var index, player;
+      if (isMe) {
+        player = $scope.game.players[$scope.game.thisPlayer];
+      } else {
+        index = $scope.game.thisPlayer === 1 ? 0 : 1;
+        player = $scope.game.players[index];
+      }
+      return player.getHp();
+    };
+    $scope.handValue = function(isMe) {
+      var hand, handValue, index;
+      if (isMe) {
+        hand = $scope.game.table.playerHands[$scope.game.thisPlayer];
+      } else {
+        index = $scope.game.thisPlayer === 1 ? 0 : 1;
+        hand = $scope.game.table.playerHands[index];
+      }
+      handValue = hand.value();
+      if (handValue > 21) {
+        handValue = "BUST";
+      }
+      return handValue;
+    };
+    $scope.avatar = function(isMe) {
+      var index;
+      if (isMe) {
+        index = $scope.game.thisPlayer === 1 ? "player2" : "player1";
+      } else {
+        if (!gameModel.isMultiplayer) {
+          return "/img/avatar-1.png";
+        }
+        index = $scope.game.thisPlayer === 1 ? "player1" : "player2";
+      }
+      return "/img/" + gameModel[index].avatar;
+    };
+    return $scope.username = function(isMe) {
+      var index;
+      if (isMe) {
+        index = $scope.game.thisPlayer === 1 ? "player2" : "player1";
+      } else {
+        if (!gameModel.isMultiplayer) {
+          return "Computer";
+        }
+        index = $scope.game.thisPlayer === 1 ? "player1" : "player2";
+      }
+      return gameModel[index].username;
     };
   }
 ]);
@@ -1047,6 +1130,18 @@ appModule.config([
       controller: 'GameController',
       templateUrl: '/template/game',
       resolve: {
+        loginStatus: [
+          "$q", "sharedApplication", function($q, sharedApp) {
+            var deferred;
+            deferred = $q.defer();
+            if (localStorage.userId != null) {
+              return deferred.resolve(true);
+            } else {
+              deferred.reject('not signed up yet');
+              return sharedApp.changePath('/home/');
+            }
+          }
+        ],
         gameModel: [
           "$q", "$route", "$http", "sharedApplication", function($q, $route, $http, sharedApp) {
             var deferred, gameId;
@@ -1056,7 +1151,8 @@ appModule.config([
               method: "GET",
               url: "/api/games/get/" + gameId + "/",
               headers: {
-                "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+                "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+                "Content-Type": "application/json;charset=UTF-8"
               }
             }).success(function(response) {
               var message;
