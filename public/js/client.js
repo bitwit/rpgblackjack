@@ -765,7 +765,8 @@ appModule.controller('LobbyController', [
           isMultiplayer: isMultiplayer
         },
         headers: {
-          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
         }
       }).success(function(response) {
         if (!isMultiplayer) {

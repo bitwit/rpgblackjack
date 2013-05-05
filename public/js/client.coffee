@@ -159,6 +159,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
         isMultiplayer: isMultiplayer
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type" : "application/json;charset=UTF-8"
     )
     .success (response) ->
       if not isMultiplayer
