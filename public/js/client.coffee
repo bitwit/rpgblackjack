@@ -204,6 +204,7 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
 
   #Game Logic
   $scope.game = null
+  $scope.isComplete = no
 
   #Server checking timer
   $scope.checkInterval = null
@@ -217,6 +218,7 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
 
   #Viz
   $scope.effects = []
+
 
   (->  #init
     if $scope.game?
@@ -242,13 +244,18 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
     console.log 'initialized game', $scope.game
   )()
 
-  $scope.startChecker = ->
+  $scope.stopChecker = ->
     $timeout.cancel $scope.checkInterval
 
+  $scope.startChecker = ->
+    $scope.stopChecker()
+    if $scope.isComplete
+      return
+
     if $scope.game.state is GAME_STATE.GAME_OVER
-      alert 'Game Over!'
-      $scope.stopChecker()
+      $scope.isComplete = yes
       sharedApp.changePath '/'
+      alert "Game Over"
       return
 
     $scope.checkInterval = $timeout ->
@@ -257,8 +264,6 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
 
   $scope.startChecker()
 
-  $scope.stopChecker = ->
-    $timeout.cancel $scope.checkInterval
 
   ###
    Server sync related
@@ -272,17 +277,15 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
 
     if $scope.queuedMoves.length > 0
       $scope.applyNextQueuedMove()
-      $scope.startChecker()
-      return
-
-    if $scope.isChecking
-      $scope.startChecker()
       return
 
     $scope.isChecking = true
     $scope.getLatestState()
 
   $scope.getLatestState = ->
+    if $scope.isComplete
+      return
+
     $http(
       method: "GET"
       url: "/api/games/state/#{gameModel._id}?since=#{$scope.lastMoveId}"
@@ -295,6 +298,8 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
         $scope.isChecking = false
         $scope.startChecker()
       .success (response) ->
+        if $scope.isComplete
+          return
 
         if response.payload.moves.length is 0
           $scope.isChecking = false
@@ -309,8 +314,17 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
         $scope.applyNextQueuedMove()
 
   $scope.applyNextQueuedMove = ->
+    if $scope.isComplete
+      return
 
     move = $scope.queuedMoves.shift()
+
+    if move.moveType is MOVE_TYPE.QUIT
+      $scope.isComplete = yes
+      $scope.stopChecker()
+      sharedApp.changePath '/'
+      alert 'The game has been quit'
+      return
 
     doesEndRound = $scope.game.makeMove move.moveType
     if doesEndRound
@@ -352,6 +366,8 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedA
     $scope.sendMoveToServer MOVE_TYPE.SPLIT
 
   $scope.quitGame = ->
+    $scope.isComplete = yes
+    $scope.stopChecker()
     $http(
       method: "POST"
       url: "/api/games/cancel/#{gameModel._id}"

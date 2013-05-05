@@ -789,6 +789,7 @@ appModule.controller('LobbyController', [
 appModule.controller('GameController', [
   '$scope', '$timeout', '$http', 'sharedApplication', 'gameModel', function($scope, $timeout, $http, sharedApp, gameModel) {
     $scope.game = null;
+    $scope.isComplete = false;
     $scope.checkInterval = null;
     $scope.checkIncrement = 2000;
     $scope.isChecking = false;
@@ -821,12 +822,18 @@ appModule.controller('GameController', [
       $scope.game.thisPlayer = playerIndex;
       return console.log('initialized game', $scope.game);
     })();
+    $scope.stopChecker = function() {
+      return $timeout.cancel($scope.checkInterval);
+    };
     $scope.startChecker = function() {
-      $timeout.cancel($scope.checkInterval);
+      $scope.stopChecker();
+      if ($scope.isComplete) {
+        return;
+      }
       if ($scope.game.state === GAME_STATE.GAME_OVER) {
-        alert('Game Over!');
-        $scope.stopChecker();
+        $scope.isComplete = true;
         sharedApp.changePath('/');
+        alert("Game Over");
         return;
       }
       return $scope.checkInterval = $timeout(function() {
@@ -834,9 +841,6 @@ appModule.controller('GameController', [
       }, $scope.checkIncrement);
     };
     $scope.startChecker();
-    $scope.stopChecker = function() {
-      return $timeout.cancel($scope.checkInterval);
-    };
     /*
      Server sync related
     */
@@ -852,17 +856,15 @@ appModule.controller('GameController', [
       }
       if ($scope.queuedMoves.length > 0) {
         $scope.applyNextQueuedMove();
-        $scope.startChecker();
-        return;
-      }
-      if ($scope.isChecking) {
-        $scope.startChecker();
         return;
       }
       $scope.isChecking = true;
       return $scope.getLatestState();
     };
     $scope.getLatestState = function() {
+      if ($scope.isComplete) {
+        return;
+      }
       return $http({
         method: "GET",
         url: "/api/games/state/" + gameModel._id + "?since=" + $scope.lastMoveId,
@@ -876,6 +878,9 @@ appModule.controller('GameController', [
         return $scope.startChecker();
       }).success(function(response) {
         var move, _i, _len, _ref;
+        if ($scope.isComplete) {
+          return;
+        }
         if (response.payload.moves.length === 0) {
           $scope.isChecking = false;
           $scope.startChecker();
@@ -893,7 +898,17 @@ appModule.controller('GameController', [
     };
     $scope.applyNextQueuedMove = function() {
       var dmg, doesEndRound, i, move, result, _i, _len;
+      if ($scope.isComplete) {
+        return;
+      }
       move = $scope.queuedMoves.shift();
+      if (move.moveType === MOVE_TYPE.QUIT) {
+        $scope.isComplete = true;
+        $scope.stopChecker();
+        sharedApp.changePath('/');
+        alert('The game has been quit');
+        return;
+      }
       doesEndRound = $scope.game.makeMove(move.moveType);
       if (doesEndRound) {
         result = $scope.game.evaluateResult();
@@ -935,6 +950,8 @@ appModule.controller('GameController', [
       return $scope.sendMoveToServer(MOVE_TYPE.SPLIT);
     };
     $scope.quitGame = function() {
+      $scope.isComplete = true;
+      $scope.stopChecker();
       return $http({
         method: "POST",
         url: "/api/games/cancel/" + gameModel._id,

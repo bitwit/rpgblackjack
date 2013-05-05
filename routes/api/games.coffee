@@ -213,6 +213,10 @@ exports.move = (req, res) ->
               aiThinking = no
 
         game.data = gameLogic.getSaveData()
+
+        if gameLogic.state is logic.GAME_STATE.GAME_OVER
+          game.isComplete = yes
+
         game.save()
 
         return res.json
@@ -298,6 +302,13 @@ exports.quitEarly = (req, res) ->
     game.isComplete = yes
     game.isAborted = yes
     game.save()
+
+    move = new models.Move()
+    move.gameId = game._id
+    move.userId = req.user._id
+    move.playerId = playerIndex
+    move.moveType = logic.MOVE_TYPE.QUIT
+    move.save()
 
     return res.json
       success: yes
