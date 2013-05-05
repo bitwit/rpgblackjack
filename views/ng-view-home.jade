@@ -1,0 +1,20 @@
+div(class="home-container")
+  h1 Rageface Blackjack
+
+  div(ng-switch on="currentStage")
+    div.username-picker(ng-switch-when="username")
+      h3
+        span.title Enter your hero name
+      input.username-input(ng-model="$parent.username", name="username")
+      button.confirm-username(ng-click="confirmUsername()")
+        span.title OK
+
+    div.avatar-picker(ng-switch-when="avatar")
+      h3
+        span.title Pick an avatar
+      div.avatar-preview(ng-repeat="avatar in avatars", ng-click="confirmAvatar($index)")
+        img.avatar-option(ng-src="/img/avatar-{{$index}}.png")
+
+    div.loading(ng-switch-when="loading")
+      h3
+        span.title Entering the fray...

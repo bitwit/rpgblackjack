@@ -1,0 +1,15 @@
+doctype 5
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/css/style.css')
+    meta(name="viewport",content="width=device-width")
+  body(ng-app="appModule", ng-controller="AppController")
+    div.ng-view(ng-view)
+
+  footer
+
+  script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.1.4/angular.min.js')
+  script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.1.4/angular-resource.min.js')
+  script(src='/js/base64.js')
+  script(src='/js/client.js')

@@ -1,0 +1,260 @@
+/* line 17, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline; }
+
+/* line 22, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html {
+  line-height: 1; }
+
+/* line 24, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none; }
+
+/* line 26, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+/* line 28, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle; }
+
+/* line 30, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none; }
+  /* line 103, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+  q:before, q:after, blockquote:before, blockquote:after {
+    content: "";
+    content: none; }
+
+/* line 32, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none; }
+
+/* line 116, ../../../../../../Applications/CodeKit.app/Contents/Resources/engines/compass/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block; }
+
+/* line 8, ../sass/style.sass */
+body {
+  font-family: "Helvetica Neue", "Roboto", Helvetica, sans-serif;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 0.0625em solid #f2f2f2;
+  width: 20em;
+  height: 25em; }
+
+/* line 17, ../sass/style.sass */
+h1, h2 {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: 500; }
+
+/* line 23, ../sass/style.sass */
+h3 {
+  margin: 0.625em 0;
+  text-align: center;
+  font-size: 1.25em;
+  font-weight: 200; }
+
+/* line 30, ../sass/style.sass */
+button {
+  display: block;
+  margin: 0.625em auto;
+  font-size: 1.25em; }
+
+/* line 36, ../sass/style.sass */
+div.ng-view {
+  position: relative; }
+
+/* line 43, ../sass/style.sass */
+input.username-input {
+  display: block;
+  width: 15em;
+  height: 1.25em;
+  margin: 0.625em auto;
+  font-size: 1.125em;
+  font-weight: bold; }
+
+/* line 52, ../sass/style.sass */
+div.avatar-picker {
+  width: 18.125em;
+  margin: 0 auto; }
+
+/* line 56, ../sass/style.sass */
+div.avatar-preview {
+  cursor: pointer;
+  float: left;
+  margin: 0 0.625em 0.625em 0;
+  border: 0.0625em solid #e2e2e2;
+  width: 5.5em;
+  height: 5.5em; }
+  /* line 63, ../sass/style.sass */
+  div.avatar-preview:nth-child(3n + 1) {
+    margin-right: 0; }
+
+/* line 66, ../sass/style.sass */
+img.avatar-option {
+  display: block;
+  width: 5.5em;
+  height: 5.5em; }
+
+/* line 77, ../sass/style.sass */
+div.deck-of-cards {
+  position: relative;
+  -webkit-perspective: 1000; }
+
+/* line 83, ../sass/style.sass */
+div.card {
+  margin: 0.3125em;
+  border: 0.0625em solid #d2d2d2;
+  width: 2.5em;
+  height: 3.75em;
+  position: absolute;
+  float: left;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 0.66s linear, top 0.66s linear, left 0.66s linear, opacity 0.2s linear; }
+  /* line 93, ../sass/style.sass */
+  div.card.flipped-true {
+    -webkit-transform: rotatey(180deg); }
+  /* line 95, ../sass/style.sass */
+  div.card:active {
+    opacity: 0.65; }
+  /* line 97, ../sass/style.sass */
+  div.card .face {
+    -webkit-backface-visibility: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%; }
+    /* line 104, ../sass/style.sass */
+    div.card .face.front .pattern {
+      margin: 5%;
+      width: 90%;
+      height: 90%;
+      background: url(/img/card-front-pattern.png) repeat; }
+    /* line 109, ../sass/style.sass */
+    div.card .face.back {
+      -webkit-transform: rotatey(180deg);
+      box-sizing: border-box;
+      color: #545454;
+      background: white; }
+      /* line 114, ../sass/style.sass */
+      div.card .face.back img.suit {
+        display: block;
+        float: left;
+        width: 1.25em;
+        height: 1.25em; }
+      /* line 119, ../sass/style.sass */
+      div.card .face.back span.value {
+        display: block;
+        padding: 1.25em 0.875em;
+        font-size: 0.75em; }
+
+/* line 124, ../sass/style.sass */
+div.hud {
+  position: absolute; }
+  /* line 127, ../sass/style.sass */
+  div.hud div.avatar {
+    float: left;
+    position: relative;
+    z-index: 2;
+    width: 2.5em;
+    height: 2.5em; }
+  /* line 134, ../sass/style.sass */
+  div.hud img.avatar {
+    -webkit-border-radius: 1.25em;
+    -moz-border-radius: 1.25em;
+    -ms-border-radius: 1.25em;
+    -o-border-radius: 1.25em;
+    border-radius: 1.25em;
+    border: 0.125em solid #333333;
+    width: 100%;
+    height: 100%; }
+  /* line 140, ../sass/style.sass */
+  div.hud div.info-container {
+    float: left;
+    position: relative;
+    left: -0.75em;
+    width: 5.3125em; }
+    /* line 146, ../sass/style.sass */
+    div.hud div.info-container div.hit-points-container {
+      border: 0.0625em solid #aaaaaa;
+      -webkit-border-radius: 0 0.25em 0.25em 0;
+      -moz-border-radius: 0 0.25em 0.25em 0;
+      -ms-border-radius: 0 0.25em 0.25em 0;
+      -o-border-radius: 0 0.25em 0.25em 0;
+      border-radius: 0 0.25em 0.25em 0;
+      width: 5.3125em;
+      height: 1em; }
+    /* line 152, ../sass/style.sass */
+    div.hud div.info-container div.hit-points {
+      float: left;
+      background: #990000;
+      width: 100%;
+      height: 1em;
+      line-height: 1em;
+      color: white;
+      -webkit-border-radius: 0 0.25em 0.25em 0;
+      -moz-border-radius: 0 0.25em 0.25em 0;
+      -ms-border-radius: 0 0.25em 0.25em 0;
+      -o-border-radius: 0 0.25em 0.25em 0;
+      border-radius: 0 0.25em 0.25em 0; }
+      /* line 160, ../sass/style.sass */
+      div.hud div.info-container div.hit-points span.value {
+        display: block;
+        float: right;
+        margin: 0 0.375em;
+        font-size: 0.6875em; }
+    /* line 166, ../sass/style.sass */
+    div.hud div.info-container div.hand-info {
+      float: left;
+      clear: both; }
+      /* line 169, ../sass/style.sass */
+      div.hud div.info-container div.hand-info span.value {
+        display: block;
+        text-indent: 1.375em;
+        font-weight: bold;
+        font-size: 0.875em; }
+
+/* line 176, ../sass/style.sass */
+div.move-options {
+  position: absolute;
+  top: 11.25em;
+  left: 3.625em; }
+  /* line 180, ../sass/style.sass */
+  div.move-options button.move-option {
+    display: block;
+    float: left;
+    margin: 0 0.625em;
+    width: 5em;
+    height: 2.5em;
+    font-size: 1em; }
+
+/* line 188, ../sass/style.sass */
+div.player-you {
+  top: 18.75em;
+  left: 11.875em; }
+
+/* line 192, ../sass/style.sass */
+div.player-opponent {
+  top: 1.25em;
+  left: 11.875em; }

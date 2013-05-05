@@ -1,0 +1,7 @@
+.sass-cache
+.git
+.idea
+node_modules/.bin
+node_modules/express
+node_modules/jade
+node_modules/mongoose

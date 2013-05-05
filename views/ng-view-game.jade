@@ -1,0 +1,38 @@
+div(class="game-container")
+  div(class="deck-of-cards")
+    div(class="card suit-{{card.suit}} value-{{card.value}} flipped-{{card.isFlipped}}", ng-repeat="card in game.table.allCards", ng-style="cardStyles(card)")
+      div.front.face
+        div.pattern
+      div.back.face
+        img.suit(ng-src="/img/suit-{{card.suit}}.png")
+        span.value {{card.value}}
+
+  div.hud-container
+
+    div.hud.player-you
+      div.avatar
+        img.avatar(src="/img/avatar-1.png")
+      div.info-container
+        div.hit-points-container
+          div.hit-points(ng-style="hpBarStyles(true)")
+            span.value {{playerHp(true)}}
+        div.hand-info
+          span.value {{handValue(true)}}
+
+    div.hud.player-opponent
+      div.avatar
+        img.avatar(src="/img/avatar-5.png")
+      div.info-container
+        div.hit-points-container
+          div.hit-points(ng-style="hpBarStyles(false)")
+            span.value {{playerHp(false)}}
+        div.hand-info
+          span.value {{handValue(false)}}
+
+  div.move-options
+    button.move-option.hit(ng-click="playerHit()")
+      span.title Hit
+    button.move-option.stay(ng-click="playerStay()")
+      span.title Stay
+    //button.move-option.split(ng-click="playerSplit()")
+      span.title Split
