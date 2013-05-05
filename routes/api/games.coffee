@@ -161,7 +161,12 @@ exports.move = (req, res) ->
         else
           gameLogic.thisPlayer = playerIndex
 
-        gameLogic.makeMove moveType
+        console.log 'Player making their move'
+
+        doesEndRound = gameLogic.makeMove moveType
+        if doesEndRound
+          gameLogic.evaluateResult()
+          gameLogic.dealNextHand()
 
         move = new models.Move()
         move.gameId = game._id
@@ -173,13 +178,21 @@ exports.move = (req, res) ->
         game.moves.push move
 
         if not game.isMultiplayer
+          console.log 'Activating AI Logic, not a multiplayer game'
           ai = new logic.AI()
           aiThinking = yes
           while aiThinking is yes
             if gameLogic.currentRound.playerTurn isnt playerIndex
+              console.log 'AI about to decide and execute a move'
               aiMove = ai.decide gameLogic.table.playerHands[1], gameLogic.table.playerHands[0]
 
-              gameLogic.makeMove aiMove
+              console.log 'AI decision', aiMove
+
+              doesEndRound = gameLogic.makeMove aiMove
+              if doesEndRound
+                console.log 'AI decision ended the round'
+                gameLogic.evaluateResult()
+                gameLogic.dealNextHand()
 
               move = new models.Move()
               move.gameId = game._id
@@ -190,6 +203,7 @@ exports.move = (req, res) ->
 
               game.moves.push move
             else
+              console.log 'AI not deciding -- playerTurn:', gameLogic.currentRound.playerTurn
               aiThinking = no
 
         game.data = gameLogic.getSaveData()

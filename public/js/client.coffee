@@ -257,13 +257,12 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
 
   $scope.applyNextQueuedMove = ->
 
-    console.log 'queuedMoves', $scope.queuedMoves
-
     move = $scope.queuedMoves.shift()
 
-    console.log 'performing move', move
-
-    $scope.game.makeMove move.moveType
+    doesEndRound = $scope.game.makeMove move.moveType
+    if doesEndRound
+      $scope.game.evaluateResult()
+      $scope.game.dealNextHand()
 
     $scope.moves.push move
     $scope.isChecking = false

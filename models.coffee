@@ -1,6 +1,6 @@
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
-mongoose.connect 'mongodb://localhost/blackjackrpg'
+mongoose.connect 'mongodb://localhost/rpgblackjack'
 
 models = {}
 
