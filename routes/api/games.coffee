@@ -47,6 +47,7 @@ exports.me = (req, res) ->
         success: no
         message: "Error while searching for user's games"
     else
+      console.log 'games result', result
       return res.json
         success: yes
         payload: result
@@ -56,7 +57,7 @@ exports.rooms = (req, res) ->
   Returns a list of available rooms to the user
   ###
   models.Game
-    .find({isMultiplayer: yes, userCount: 1})
+    .find({isMultiplayer: yes, userCount: 1, isComplete: no })
     .populate('player1')
     .exec (err, result) ->
       return res.json
@@ -263,50 +264,42 @@ exports.state = (req, res) ->
 
 exports.quitEarly = (req, res) ->
   ###
-    For handling when a user leaves their newly created game before finding a partner
+    For handling when a user leaves their game
   ###
-  users_games = []
-  #models.UserGame.objects.filter(game_id=game_id)
-  playerIndex = 0
-  found = no
+  gameId = req.params["gameId"]
 
-  for user_game in users_games
-    if user_game.user.id is req.user.id
-      found = yes
-      break
+  ###
+  # User confirmation
+  ###
+  models.Game.findOne {"_id": gameId}, (err, result) ->
+    if err
+      return res.json 400,
+        success: no
+        message: "No game by that ID"
     else
-      playerIndex += 1
+      game = result
 
-  if not found
-    return res.json 400,
-      success: no
-      message: "No game for user by that ID"
+      #need to convert to string, so not comparing mongo objectIDs
+      if req.user._id.toString() is game.player1.toString()
+        playerIndex = 0
+      else if req.user._id.toString() is game.player2.toString()
+        playerIndex = 1
+      else
+        return res.json 400,
+          success: no
+          message: "No game for user by that ID"
 
-  game = users_games[0]
-  if game.is_complete
-    return res.json 400,
-      success: no
-      message: "This game is already completed/quit"
+    if game.isComplete
+      return res.json 400,
+        success: no
+        message: "This game is already completed/quit"
 
-  #in this case we don't delete the game, we just set it to complete
-  game.is_complete = yes
-  game.is_aborted = yes
-  game.save()
+    #in this case we don't delete the game, we just set it to complete
+    game.isComplete = yes
+    game.isAborted = yes
+    game.save()
 
-  now = Date()
-  loggedMove = {}
-  # new models.LoggedMove(game_id=game_id)
-  loggedMove.move_type_id = MOVE_TYPE.QUIT
-  loggedMove.user = request.user
-  loggedMove.player_id = playerIndex
-  #loggedMove.from_x = 0
-  #loggedMove.from_y = 0
-  #loggedMove.to_x = 0
-  #loggedMove.to_y = 0
-  #loggedMove.created_at = now
-  loggedMove.save()
-
-  return res.json
-    success: yes
-    payload: null
-    message: "Successfull quit game"
+    return res.json
+      success: yes
+      payload: null
+      message: "Successfully quit game"

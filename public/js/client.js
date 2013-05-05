@@ -113,7 +113,8 @@ Game = (function() {
   };
 
   Game.prototype.evaluateResult = function() {
-    var hpLost, player1, player1HandValue, player2, player2HandValue;
+    var hpLost, player1, player1HandValue, player2, player2HandValue, result;
+    result = [0, 0];
     player1 = this.players[0];
     player1HandValue = this.table.playerHands[0].value();
     if (player1HandValue > 21) {
@@ -130,18 +131,21 @@ Game = (function() {
         hpLost = 11;
       }
       player2.takeDamage(hpLost);
+      result[1] = hpLost;
     } else if (player2HandValue > player1HandValue) {
       hpLost = player2HandValue - player1HandValue;
       if (hpLost > 11) {
         hpLost = 11;
       }
       player1.takeDamage(hpLost);
+      result[0] = hpLost;
     } else {
       console.log('tie round, no damage');
     }
     if (player1.hp === 0 || player2.hp === 0) {
-      return this.state = GAME_STATE.GAME_OVER;
+      this.state = GAME_STATE.GAME_OVER;
     }
+    return result;
   };
 
   Game.prototype.clearHand = function() {
@@ -573,7 +577,7 @@ Table = (function() {
 */
 
 
-appModule = angular.module('appModule', ['ngResource']);
+appModule = angular.module('appModule', []);
 
 appModule.controller('AppController', [
   '$scope', '$timeout', 'sharedApplication', function($scope, $timeout, sharedApp) {
@@ -665,14 +669,19 @@ appModule.controller('LobbyController', [
           "Content-Type": "application/json;charset=UTF-8"
         }
       }).success(function(response) {
-        return $scope.games = response.payload;
-        /*
-        #TODO: dont let people join their own games
-        for game in $scope.games
-          if game.playerName is sharedApp.user.username
-            $scope.startWaiting game.id
-        */
-
+        var game, _i, _len, _ref, _results;
+        $scope.games = response.payload;
+        _ref = $scope.games;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          game = _ref[_i];
+          if (game.player1._id === localStorage.userId) {
+            _results.push($scope.startWaiting(game._id));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
       });
     };
     $scope.refreshRooms();
@@ -692,7 +701,7 @@ appModule.controller('LobbyController', [
       }
       clearInterval($scope.waitingInterval);
       return $http({
-        method: "GET",
+        method: "POST",
         url: "/api/games/cancel/" + $scope.waitingGameId,
         headers: {
           "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
@@ -778,7 +787,7 @@ appModule.controller('LobbyController', [
 ]);
 
 appModule.controller('GameController', [
-  '$scope', '$timeout', '$http', 'gameModel', function($scope, $timeout, $http, gameModel) {
+  '$scope', '$timeout', '$http', 'sharedApplication', 'gameModel', function($scope, $timeout, $http, sharedApp, gameModel) {
     $scope.game = null;
     $scope.checkInterval = null;
     $scope.checkIncrement = 2000;
@@ -786,6 +795,7 @@ appModule.controller('GameController', [
     $scope.lastMoveId = 0;
     $scope.moves = [];
     $scope.queuedMoves = [];
+    $scope.effects = [];
     (function() {
       var playerIndex;
       if ($scope.game != null) {
@@ -812,16 +822,34 @@ appModule.controller('GameController', [
       return console.log('initialized game', $scope.game);
     })();
     $scope.startChecker = function() {
+      $timeout.cancel($scope.checkInterval);
+      if ($scope.game.state === GAME_STATE.GAME_OVER) {
+        alert('Game Over!');
+        $scope.stopChecker();
+        sharedApp.changePath('/');
+        return;
+      }
       return $scope.checkInterval = $timeout(function() {
         return $scope.checkGameState();
       }, $scope.checkIncrement);
     };
     $scope.startChecker();
+    $scope.stopChecker = function() {
+      return $timeout.cancel($scope.checkInterval);
+    };
     /*
      Server sync related
     */
 
     $scope.checkGameState = function() {
+      var effect, _i, _len, _ref;
+      if ($scope.effects.length > 0) {
+        _ref = $scope.effects;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          effect = _ref[_i];
+          $scope.effects.pop();
+        }
+      }
       if ($scope.queuedMoves.length > 0) {
         $scope.applyNextQueuedMove();
         $scope.startChecker();
@@ -864,16 +892,38 @@ appModule.controller('GameController', [
       });
     };
     $scope.applyNextQueuedMove = function() {
-      var doesEndRound, move;
+      var dmg, doesEndRound, i, move, result, _i, _len;
       move = $scope.queuedMoves.shift();
       doesEndRound = $scope.game.makeMove(move.moveType);
       if (doesEndRound) {
-        $scope.game.evaluateResult();
-        $scope.game.dealNextHand();
+        result = $scope.game.evaluateResult();
+        for (i = _i = 0, _len = result.length; _i < _len; i = ++_i) {
+          dmg = result[i];
+          if (dmg > 0) {
+            if (i === $scope.game.thisPlayer) {
+              $scope.effects.push({
+                value: dmg,
+                top: 360,
+                left: 200
+              });
+            } else {
+              $scope.effects.push({
+                value: dmg,
+                top: 80,
+                left: 200
+              });
+            }
+          }
+        }
+        $timeout(function() {
+          $scope.game.dealNextHand();
+          return $scope.startChecker();
+        }, 2000);
+      } else {
+        $scope.startChecker();
       }
       $scope.moves.push(move);
-      $scope.isChecking = false;
-      return $scope.startChecker();
+      return $scope.isChecking = false;
     };
     $scope.playerHit = function() {
       return $scope.sendMoveToServer(MOVE_TYPE.HIT);
@@ -883,6 +933,21 @@ appModule.controller('GameController', [
     };
     $scope.playerSplit = function() {
       return $scope.sendMoveToServer(MOVE_TYPE.SPLIT);
+    };
+    $scope.quitGame = function() {
+      return $http({
+        method: "POST",
+        url: "/api/games/cancel/" + gameModel._id,
+        headers: {
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
+        }
+      }).success(function(response) {
+        return sharedApp.changePath('/');
+      }).error(function(response) {
+        alert("Error while cancelling game ->" + response.message);
+        return sharedApp.changePath('/');
+      });
     };
     $scope.sendMoveToServer = function(move) {
       return $http({
@@ -905,6 +970,71 @@ appModule.controller('GameController', [
      View related responses
     */
 
+    $scope.highLowCount = function() {
+      var card, count, hand, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+      count = 0;
+      _ref = $scope.game.table.usedPile.cards;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        card = _ref[_i];
+        switch (card.value) {
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 6:
+            count += 1;
+            break;
+          case "K":
+          case "Q":
+          case "J":
+            count -= 1;
+            break;
+          default:
+            count += 0;
+        }
+      }
+      _ref1 = $scope.game.table.playerHands;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        hand = _ref1[_j];
+        _ref2 = hand.cards;
+        for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+          card = _ref2[_k];
+          if (card.isFlipped === false) {
+            continue;
+          }
+          switch (card.value) {
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+              count += 1;
+              break;
+            case "K":
+            case "Q":
+            case "J":
+              count -= 1;
+              break;
+            default:
+              count += 0;
+          }
+        }
+      }
+      if (count > 0) {
+        count = "+" + count;
+      } else if (count === 0) {
+        count = "+/-0";
+      }
+      return count;
+    };
+    $scope.effectStyles = function(effect) {
+      var fontSize;
+      fontSize = 16;
+      return {
+        top: effect.top / fontSize + "em",
+        left: effect.left / fontSize + "em"
+      };
+    };
     $scope.cardStyles = function(card) {
       var fontSize, i, pileCard, position, _i, _len, _ref;
       if (card.currentPile == null) {
@@ -958,11 +1088,14 @@ appModule.controller('GameController', [
             return {
               "top": position.top / fontSize + "em",
               "left": (position.left + (i * 30 - card.currentPile.cards.length * 25)) / fontSize + "em",
-              "z-index": i
+              "z-index": i * 2
             };
           }
         }
       }
+    };
+    $scope.isMyTurn = function() {
+      return $scope.game.thisPlayer === $scope.game.currentRound.playerTurn;
     };
     $scope.hpBarStyles = function(isMe) {
       var index, player;
@@ -1035,6 +1168,26 @@ appModule.factory("sharedApplication", [
       return $location.path(path);
     };
     sharedApp.rootScope = $rootScope;
+    if (localStorage.userId != null) {
+      $http({
+        method: "GET",
+        url: "/api/games/me",
+        headers: {
+          "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password"),
+          "Content-Type": "application/json;charset=UTF-8"
+        }
+      }).success(function(response) {
+        var game, games, _i, _len;
+        if (response.payload != null) {
+          games = response.payload;
+          for (_i = 0, _len = games.length; _i < _len; _i++) {
+            game = games[_i];
+            sharedApp.changePath("/game/" + game._id + "/");
+            break;
+          }
+        }
+      });
+    }
     /*
     # rootscope setup
     */

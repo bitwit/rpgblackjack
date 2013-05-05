@@ -1,4 +1,4 @@
-appModule = angular.module 'appModule', ['ngResource']
+appModule = angular.module 'appModule', []
 
 #@codekit-prepend "../../node_modules/game/classes/Game.coffee"
 #@codekit-prepend "../../node_modules/game/classes/Card.coffee"
@@ -99,12 +99,10 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
     )
     .success (response) ->
       $scope.games = response.payload
-      ###
-      #TODO: dont let people join their own games
       for game in $scope.games
-        if game.playerName is sharedApp.user.username
-          $scope.startWaiting game.id
-      ###
+        if game.player1._id is localStorage.userId
+          $scope.startWaiting game._id
+
 
   $scope.refreshRooms() #call immediately
 
@@ -123,7 +121,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
 
     clearInterval $scope.waitingInterval
     $http(
-      method: "GET"
+      method: "POST"
       url: "/api/games/cancel/#{$scope.waitingGameId}"
       headers:
         "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
@@ -202,7 +200,7 @@ appModule.controller 'LobbyController', [ "$scope", "$http", "sharedApplication"
       alert(response.message)
 ]
 
-appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameModel', ($scope, $timeout, $http, gameModel) ->
+appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'sharedApplication', 'gameModel', ($scope, $timeout, $http, sharedApp, gameModel) ->
 
   #Game Logic
   $scope.game = null
@@ -216,6 +214,9 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
   $scope.lastMoveId = 0 #no moves listed yet
   $scope.moves = [] #array of moves as they were made in DESC order
   $scope.queuedMoves = [] #moves to be animated
+
+  #Viz
+  $scope.effects = []
 
   (->  #init
     if $scope.game?
@@ -242,17 +243,33 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
   )()
 
   $scope.startChecker = ->
+    $timeout.cancel $scope.checkInterval
+
+    if $scope.game.state is GAME_STATE.GAME_OVER
+      alert 'Game Over!'
+      $scope.stopChecker()
+      sharedApp.changePath '/'
+      return
+
     $scope.checkInterval = $timeout ->
       $scope.checkGameState()
     , $scope.checkIncrement
 
   $scope.startChecker()
 
+  $scope.stopChecker = ->
+    $timeout.cancel $scope.checkInterval
+
   ###
    Server sync related
   ###
 
   $scope.checkGameState = ->
+
+    if $scope.effects.length > 0
+      for effect in $scope.effects
+        $scope.effects.pop()
+
     if $scope.queuedMoves.length > 0
       $scope.applyNextQueuedMove()
       $scope.startChecker()
@@ -297,12 +314,29 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
 
     doesEndRound = $scope.game.makeMove move.moveType
     if doesEndRound
-      $scope.game.evaluateResult()
-      $scope.game.dealNextHand()
+      result = $scope.game.evaluateResult()
+      for dmg, i in result
+        if dmg > 0
+          if i is $scope.game.thisPlayer
+            $scope.effects.push
+              value: dmg
+              top: 360
+              left: 200
+          else
+            $scope.effects.push
+              value: dmg
+              top: 80
+              left: 200
+
+      $timeout ->
+        $scope.game.dealNextHand()
+        $scope.startChecker()
+      , 2000
+    else
+      $scope.startChecker()
 
     $scope.moves.push move
     $scope.isChecking = false
-    $scope.startChecker()
 
 
   $scope.playerHit = ->
@@ -316,6 +350,21 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
   $scope.playerSplit = ->
     #$scope.game.makeMove MOVE_TYPE.SPLIT
     $scope.sendMoveToServer MOVE_TYPE.SPLIT
+
+  $scope.quitGame = ->
+    $http(
+      method: "POST"
+      url: "/api/games/cancel/#{gameModel._id}"
+      headers:
+        "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
+    )
+    .success (response) ->
+      sharedApp.changePath '/'
+    .error (response) ->
+      alert("Error while cancelling game ->" + response.message)
+      sharedApp.changePath '/'
+
 
   $scope.sendMoveToServer = (move) ->
     $http(
@@ -336,6 +385,44 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
   ###
    View related responses
   ###
+  $scope.highLowCount = ->
+
+    count = 0
+
+    for card in $scope.game.table.usedPile.cards
+      switch card.value
+        when 2,3,4,5,6
+          count += 1
+        when "K", "Q", "J"
+          count -= 1
+        else
+          count += 0
+
+    for hand in $scope.game.table.playerHands
+      for card in hand.cards
+        if card.isFlipped is no
+          continue
+        switch card.value
+          when 2,3,4,5,6
+            count += 1
+          when "K", "Q", "J"
+            count -= 1
+          else
+            count += 0
+
+    if count > 0
+      count = "+" + count
+    else if count is 0
+      count = "+/-0"
+
+    return count
+
+  $scope.effectStyles = (effect) ->
+    fontSize = 16
+    return {
+      top : effect.top/fontSize + "em"
+      left: effect.left/fontSize + "em"
+    }
 
   $scope.cardStyles = (card) ->
     if !card.currentPile?
@@ -384,8 +471,11 @@ appModule.controller 'GameController', ['$scope', '$timeout', '$http' , 'gameMod
             return {
               "top": position.top/fontSize + "em"
               "left": (position.left + (i * 30 - card.currentPile.cards.length * 25))/fontSize + "em"
-              "z-index": i
+              "z-index": i * 2
             }
+
+  $scope.isMyTurn = ->
+    ($scope.game.thisPlayer is $scope.game.currentRound.playerTurn)
 
   $scope.hpBarStyles = (isMe) ->
     if isMe
@@ -456,6 +546,23 @@ appModule.factory "sharedApplication", ["$rootScope", "$http","$location", "$rou
     $location.path path
 
   sharedApp.rootScope = $rootScope
+
+  if localStorage.userId?
+    $http(
+      method: "GET"
+      url: "/api/games/me"
+      headers:
+        "Authorization": "Basic " + Base64.encode(localStorage.userId + ":password")
+        "Content-Type": "application/json;charset=UTF-8"
+    )
+    .success (response) ->
+      if response.payload?
+        games = response.payload
+        for game in games
+          sharedApp.changePath "/game/#{game._id}/"
+          break
+        return
+
 
   ###
   # rootscope setup

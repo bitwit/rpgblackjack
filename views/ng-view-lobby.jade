@@ -5,29 +5,39 @@ div.view.lobby-container
   //button(class="back hidden-{{isInRoom}}", ng-click="mainMenu()")
     span.title Back
 
-
   div(ng-switch on="isInRoom")
     div.lobby-options(ng-switch-default)
-      h3 New Game
-
       div.main-options
-        button.new-account(ng-click="newUser()")
-          span.title Create New User
+        button.big.new-account(ng-click="newUser()")
+          span.title Change User
 
-        button.coop-computer(ng-click="singlePlayer()")
+        h5
+          span.title New Game
+
+        button.big.coop-computer(ng-click="singlePlayer()")
           span.title Vs AI
 
-      div.available-games
-        button.coop-new(ng-click="newRoom()")
+        button.big.coop-new(ng-click="newRoom()")
           span.title Vs Human
+
+      div.available-games
+        h5
+          span.title Join a Game
         ul.games-list
           li.game(ng-repeat="game in games")
-            strong.player-name {{game.player1.username}}
-            button.join(ng-click="joinGame(game)") Join Game
+            img.avatar(ng-src="/img/{{game.player1.avatar}}")
+            strong.player-name Vs. {{game.player1.username}}
+            button.join(ng-click="joinGame(game)")
+              span.title Join
 
 
     div.lobby-room(ng-switch-when="true")
       h2 One moment while a partner joins your game...
-      img.loader(src="/static/img/ajax-loader.gif")
+      img.loader(src="/img/ajax-loader.gif")
       button.coop-cancel(ng-click="cancelRoom()")
-        span.title Cancel Game
+        span.title Cancel
+
+
+  h6
+    a.code(href="http://github.com/bitwit/rpgblackjack")
+      span.title Code available on GitHub

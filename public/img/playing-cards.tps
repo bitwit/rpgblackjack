@@ -20,7 +20,7 @@
         <key>dpi</key>
         <uint>72</uint>
         <key>dataFormat</key>
-        <string>sass-mixins</string>
+        <string>css</string>
         <key>textureFileName</key>
         <filename>playing-cards.png</filename>
         <key>flipPVR</key>
@@ -111,7 +111,7 @@
             <enum type="AndEngine::MagFilter">MagLinear</enum>
         </struct>
         <key>dataFileName</key>
-        <filename>../sass/playing-cards.sass</filename>
+        <filename>../sass/playing-cards.css</filename>
         <key>mainExtension</key>
         <string></string>
         <key>forceIdenticalLayout</key>

@@ -17,9 +17,9 @@ attributes =
   userCount: Number
   player1: {"type": Schema.Types.ObjectId, "ref": "User"}
   player2: {"type": Schema.Types.ObjectId, "ref": "User", "default": null}
-  isMultiplayer: Boolean
-  isComplete: Boolean
-  isAborted: Boolean
+  isMultiplayer: { "type": Boolean, "default" : no }
+  isComplete: { "type": Boolean, "default" : no }
+  isAborted: { "type": Boolean, "default" : no }
   moves: [{"type": Schema.Types.ObjectId, "ref": "Move"}]
 
 schema = new Schema attributes, strict: yes

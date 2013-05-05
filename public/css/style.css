@@ -392,13 +392,23 @@ h1, h2 {
   font-weight: 500; }
 
 /* line 29, ../sass/style.sass */
-h3 {
+h3, h4, h5 {
   margin: 0.625em 0;
   text-align: center;
+  text-decoration: underline;
   font-size: 1.25em;
   font-weight: 200; }
 
-/* line 36, ../sass/style.sass */
+/* line 37, ../sass/style.sass */
+h6 {
+  text-align: center;
+  color: white;
+  font-size: 40%; }
+  /* line 41, ../sass/style.sass */
+  h6 a.code {
+    color: inherit; }
+
+/* line 44, ../sass/style.sass */
 button {
   cursor: pointer;
   border: 0;
@@ -415,13 +425,21 @@ button {
   margin: 0.625em auto;
   width: 5em;
   height: 2.5em;
-  font-size: 1em;
-  font-weight: bold; }
-  /* line 51, ../sass/style.sass */
+  font-size: 1em; }
+  /* line 57, ../sass/style.sass */
   button:active, button:hover {
     opacity: 0.8; }
+  /* line 59, ../sass/style.sass */
+  button.big {
+    background-size: 10em 2.75em;
+    width: 10em;
+    height: 2.75em; }
+  /* line 64, ../sass/style.sass */
+  button span.title {
+    font-size: 0.875em;
+    font-weight: bold; }
 
-/* line 54, ../sass/style.sass */
+/* line 69, ../sass/style.sass */
 div.ng-view {
   overflow: scroll;
   position: relative;
@@ -429,7 +447,7 @@ div.ng-view {
   background: url(/img/bg-image.jpg) no-repeat;
   background-size: 100% 100%; }
 
-/* line 65, ../sass/style.sass */
+/* line 80, ../sass/style.sass */
 input.username-input {
   display: block;
   width: 15em;
@@ -438,36 +456,79 @@ input.username-input {
   font-size: 1.125em;
   font-weight: bold; }
 
-/* line 74, ../sass/style.sass */
+/* line 89, ../sass/style.sass */
 div.avatar-picker {
   width: 18.125em;
   margin: 0 auto;
   overflow: scroll; }
 
-/* line 79, ../sass/style.sass */
+/* line 94, ../sass/style.sass */
 div.avatar-preview {
   cursor: pointer;
   float: left;
   margin: 0 0.625em 0.625em 0;
   border: 0.0625em solid #e2e2e2;
   width: 5.5em;
-  height: 5.5em; }
-  /* line 86, ../sass/style.sass */
+  height: 5.5em;
+  background-color: white; }
+  /* line 102, ../sass/style.sass */
   div.avatar-preview:nth-child(3n + 1) {
     margin-right: 0; }
 
-/* line 89, ../sass/style.sass */
+/* line 105, ../sass/style.sass */
 img.avatar-option {
   display: block;
   width: 5.5em;
   height: 5.5em; }
 
-/* line 100, ../sass/style.sass */
+/* line 114, ../sass/style.sass */
+ul.games-list li.game {
+  width: 17.5em;
+  margin: 0.625em auto;
+  clear: both;
+  overflow: hidden; }
+  /* line 119, ../sass/style.sass */
+  ul.games-list li.game img.avatar {
+    margin-right: 0.625em;
+    -webkit-border-radius: 1.25em;
+    -moz-border-radius: 1.25em;
+    -ms-border-radius: 1.25em;
+    -o-border-radius: 1.25em;
+    border-radius: 1.25em;
+    border: 0.125em solid #333333;
+    background-color: white;
+    width: 2.5em;
+    height: 2.5em;
+    display: block;
+    float: left; }
+  /* line 128, ../sass/style.sass */
+  ul.games-list li.game strong.player-name {
+    float: left;
+    display: block;
+    width: 7.8125em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 2.5em;
+    margin-right: 0.625em; }
+  /* line 137, ../sass/style.sass */
+  ul.games-list li.game button.join {
+    float: right;
+    margin: 0; }
+
+/* line 141, ../sass/style.sass */
+img.loader {
+  display: block;
+  width: 2em;
+  height: 2em;
+  margin: 0.625em auto; }
+
+/* line 152, ../sass/style.sass */
 div.deck-of-cards {
   position: relative;
   -webkit-perspective: 1000; }
 
-/* line 106, ../sass/style.sass */
+/* line 158, ../sass/style.sass */
 div.card {
   margin: 0.3125em;
   width: 4.25em;
@@ -476,23 +537,23 @@ div.card {
   float: left;
   -webkit-transform-style: preserve-3d;
   -webkit-transition: -webkit-transform 0.66s linear, top 0.66s linear, left 0.66s linear, opacity 0.2s linear; }
-  /* line 115, ../sass/style.sass */
+  /* line 167, ../sass/style.sass */
   div.card.flipped-true {
     -webkit-transform: rotatey(180deg); }
-  /* line 117, ../sass/style.sass */
+  /* line 169, ../sass/style.sass */
   div.card:active {
     opacity: 0.65; }
-  /* line 119, ../sass/style.sass */
+  /* line 171, ../sass/style.sass */
   div.card .face {
     -webkit-backface-visibility: hidden;
     position: absolute;
     width: 100%;
     height: 100%; }
-    /* line 125, ../sass/style.sass */
+    /* line 177, ../sass/style.sass */
     div.card .face.back {
       -webkit-transform: rotatey(180deg);
       box-sizing: border-box; }
-    /* line 128, ../sass/style.sass */
+    /* line 180, ../sass/style.sass */
     div.card .face div.design {
       font-size: 50%;
       -webkit-border-radius: 0.25em;
@@ -501,25 +562,44 @@ div.card {
       -o-border-radius: 0.25em;
       border-radius: 0.25em; }
 
-/* line 132, ../sass/style.sass */
+/* line 184, ../sass/style.sass */
+div.high-low-count {
+  position: absolute;
+  top: 8.125em;
+  left: 0.9375em;
+  background: rgba(255, 255, 255, 0.8);
+  width: 3.75em;
+  color: #910000; }
+  /* line 191, ../sass/style.sass */
+  div.high-low-count span.title {
+    display: block;
+    text-align: center;
+    font-size: 0.5em;
+    font-weight: bold; }
+  /* line 197, ../sass/style.sass */
+  div.high-low-count span.value {
+    display: block;
+    text-align: center; }
+
+/* line 202, ../sass/style.sass */
 div.hud {
   position: absolute; }
-  /* line 136, ../sass/style.sass */
+  /* line 206, ../sass/style.sass */
   div.hud div.username {
     position: relative;
     top: 0.5em;
     left: 2.5em; }
-    /* line 140, ../sass/style.sass */
+    /* line 210, ../sass/style.sass */
     div.hud div.username span.title {
       font-size: 0.75em; }
-  /* line 143, ../sass/style.sass */
+  /* line 213, ../sass/style.sass */
   div.hud div.avatar {
     float: left;
     position: relative;
     z-index: 2;
     width: 2.5em;
     height: 2.5em; }
-  /* line 150, ../sass/style.sass */
+  /* line 220, ../sass/style.sass */
   div.hud img.avatar {
     -webkit-border-radius: 1.25em;
     -moz-border-radius: 1.25em;
@@ -530,14 +610,14 @@ div.hud {
     width: 100%;
     height: 100%;
     background-color: white; }
-  /* line 157, ../sass/style.sass */
+  /* line 227, ../sass/style.sass */
   div.hud div.info-container {
     float: left;
     position: relative;
     top: 0.625em;
     left: -0.75em;
     width: 5.3125em; }
-    /* line 164, ../sass/style.sass */
+    /* line 234, ../sass/style.sass */
     div.hud div.info-container div.hit-points-container {
       border: 0.0625em solid #9b8566;
       -webkit-border-radius: 0 0.25em 0.25em 0;
@@ -546,8 +626,9 @@ div.hud {
       -o-border-radius: 0 0.25em 0.25em 0;
       border-radius: 0 0.25em 0.25em 0;
       width: 5.3125em;
-      height: 1em; }
-    /* line 170, ../sass/style.sass */
+      height: 1em;
+      background: url(/img/hp-bg.jpg); }
+    /* line 241, ../sass/style.sass */
     div.hud div.info-container div.hit-points {
       float: left;
       background: #910000;
@@ -559,36 +640,95 @@ div.hud {
       -moz-border-radius: 0 0.25em 0.25em 0;
       -ms-border-radius: 0 0.25em 0.25em 0;
       -o-border-radius: 0 0.25em 0.25em 0;
-      border-radius: 0 0.25em 0.25em 0; }
-      /* line 178, ../sass/style.sass */
+      border-radius: 0 0.25em 0.25em 0;
+      -webkit-transition: width 0.36s linear; }
+      /* line 250, ../sass/style.sass */
       div.hud div.info-container div.hit-points span.value {
         display: block;
         float: right;
         margin: 0 0.375em;
         font-size: 0.6875em; }
-    /* line 184, ../sass/style.sass */
+    /* line 256, ../sass/style.sass */
     div.hud div.info-container div.hand-info {
       float: left;
       clear: both; }
-      /* line 187, ../sass/style.sass */
+      /* line 259, ../sass/style.sass */
       div.hud div.info-container div.hand-info span.value {
         display: block;
         text-indent: 1.375em;
         font-weight: bold;
         font-size: 0.875em; }
 
-/* line 194, ../sass/style.sass */
+/* line 266, ../sass/style.sass */
 div.move-options {
   position: absolute;
   top: 10em;
   left: 6.625em; }
 
-/* line 199, ../sass/style.sass */
+/* line 271, ../sass/style.sass */
 div.player-you {
   top: 18.75em;
   left: 11.875em; }
 
-/* line 203, ../sass/style.sass */
+/* line 275, ../sass/style.sass */
 div.player-opponent {
   top: 1.25em;
   left: 11.875em; }
+
+/* line 279, ../sass/style.sass */
+div.effect {
+  position: absolute;
+  width: 1.875em;
+  height: 1.875em;
+  color: #910000; }
+  /* line 284, ../sass/style.sass */
+  div.effect span.value {
+    font-size: 1.25em; }
+
+/* line 287, ../sass/style.sass */
+.effect-enter-setup {
+  -webkit-transition: all 0.6s ease;
+  -moz-transition: all 0.6s ease;
+  -o-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+  opacity: 0;
+  -webkit-transform: translateY(0);
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -o-transform: translateY(0);
+  transform: translateY(0); }
+  /* line 291, ../sass/style.sass */
+  .effect-enter-setup.effect-enter-start {
+    -webkit-transform: translateY(-3.125em);
+    -moz-transform: translateY(-3.125em);
+    -ms-transform: translateY(-3.125em);
+    -o-transform: translateY(-3.125em);
+    transform: translateY(-3.125em);
+    opacity: 1; }
+
+/* line 295, ../sass/style.sass */
+.effect-leave-setup {
+  -webkit-transition: all 0.6s ease;
+  -moz-transition: all 0.6s ease;
+  -o-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+  opacity: 1;
+  -webkit-transform: translateY(-3.125em);
+  -moz-transform: translateY(-3.125em);
+  -ms-transform: translateY(-3.125em);
+  -o-transform: translateY(-3.125em);
+  transform: translateY(-3.125em); }
+  /* line 299, ../sass/style.sass */
+  .effect-leave-setup.effect-leave-start {
+    -webkit-transform: translateY(-9.375em);
+    -moz-transform: translateY(-9.375em);
+    -ms-transform: translateY(-9.375em);
+    -o-transform: translateY(-9.375em);
+    transform: translateY(-9.375em);
+    opacity: 0; }
+
+/* line 303, ../sass/style.sass */
+button.quit {
+  position: absolute;
+  bottom: 0.625em;
+  right: 0.625em; }

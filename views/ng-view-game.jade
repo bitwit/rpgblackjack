@@ -6,7 +6,14 @@ div(class="game-container")
       div.back.face
         div(class="design sprite {{card.suit}}-{{card.value}}")
 
+  div.effects-container(ng-animate=" 'effect' ")
+    div.effect(ng-style="effectStyles(effect)", ng-repeat="effect in effects")
+      span.value {{effect.value}}
+
   div.hud-container
+    div.high-low-count
+      span.title High/Low Count
+      span.value {{highLowCount()}}
     div.hud.player-you
       div.username
         span.title {{username(true)}}
@@ -31,8 +38,11 @@ div(class="game-container")
         div.hand-info
           span.value {{handValue(false)}}
 
-  div.move-options
+  div.move-options(ng-show="isMyTurn()")
     button.move-option.hit(ng-click="playerHit()")
       span.title Hit
     button.move-option.stay(ng-click="playerStay()")
       span.title Stay
+
+  button.quit(ng-click="quitGame()")
+    span.title Quit

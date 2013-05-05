@@ -54,6 +54,7 @@ app.get '/template/:template', routes.template
 app.post '/api/users/new', api.users.new
 
 # Games routes
+app.get '/api/games/me', auth, api.games.me
 app.get '/api/games/rooms', auth, api.games.rooms
 app.get '/api/games/get/:gameId', auth, api.games.get
 app.get '/api/games/state/:gameId', auth, api.games.state
@@ -61,6 +62,8 @@ app.get '/api/games/state/:gameId', auth, api.games.state
 app.post '/api/games/new', auth, api.games.new
 app.post '/api/games/move/:gameId', auth, api.games.move
 app.post '/api/games/join/:gameId', auth, api.games.join
+app.post '/api/games/cancel/:gameId', auth, api.games.quitEarly
+app.post '/api/games/quit/:gameId', auth, api.games.quitEarly
 
 
 http.createServer(app).listen app.get('port'), () ->

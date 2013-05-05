@@ -26,12 +26,20 @@ h1, h2
     size: 24/$em
     weight: 500
 
-h3
+h3,h4,h5
   margin: 10/$em 0
   text-align: center
+  text-decoration: underline
   font:
     size: 20/$em
     weight: 200
+
+h6
+  text-align: center
+  color: #FFF
+  font-size: 40%
+  a.code
+    color: inherit
 
 button
   cursor: pointer
@@ -45,11 +53,18 @@ button
   margin: 10/$em auto
   width: 80/$em
   height: 40/$em
-  font:
-    size: 16/$em
-    weight: bold
+  font-size: 16/$em
   &:active, &:hover
     opacity: 0.8
+  &.big
+    background-size: 160/$em 44/$em
+    width: 160/$em
+    height: 44/$em
+
+  span.title
+    font:
+      size: 14/$em
+      weight: bold
 
 div.ng-view
   overflow: scroll
@@ -83,6 +98,7 @@ div.avatar-preview
   border: 1/$em solid #e2e2e2
   width: 88/$em
   height: 88/$em
+  background-color: #FFF
   &:nth-child(3n + 1)
     margin-right: 0
 
@@ -91,6 +107,42 @@ img.avatar-option
   width: 88/$em
   height: 88/$em
 
+//
+// Lobby
+//
+ul.games-list
+  li.game
+    width: 280/$em
+    margin: 10/$em auto
+    clear: both
+    overflow: hidden
+    img.avatar
+      margin-right: 10/$em
+      +border-radius(20/$em)
+      border: 2/$em solid #333
+      background-color: #FFF
+      width: 40/$em
+      height: 40/$em
+      display: block
+      float: left
+    strong.player-name
+      float: left
+      display: block
+      width: 125/$em
+      overflow: hidden
+      white-space: nowrap
+      text-overflow: ellipsis
+      line-height: 40/$em
+      margin-right: 10/$em
+    button.join
+      float: right
+      margin: 0
+
+img.loader
+  display: block
+  width: 32/$em
+  height: 32/$em
+  margin: 10/$em auto
 
 
 //
@@ -129,6 +181,24 @@ div.card
       font-size: 50%
       +border-radius(4/$em)
 
+div.high-low-count
+  position: absolute
+  top: 130/$em
+  left: 15/$em
+  background: rgba(255,255,255, 0.8)
+  width: 60/$em
+  color: $theme-red
+  span.title
+    display: block
+    text-align: center
+    font:
+      size: 8/$em
+      weight: bold
+  span.value
+    display: block
+    text-align: center
+
+
 div.hud
   //border: 1/$em solid #e2e2e2
   position: absolute
@@ -166,6 +236,7 @@ div.hud
       +border-radius(0 4/$em 4/$em 0)
       width: 85/$em
       height: 16/$em
+      background: url(/img/hp-bg.jpg)
 
     div.hit-points
       float: left
@@ -175,6 +246,7 @@ div.hud
       line-height: 16/$em
       color: #FFF
       +border-radius(0 4/$em 4/$em 0)
+      -webkit-transition: width 0.36s linear
       span.value
         display: block
         float: right
@@ -203,3 +275,32 @@ div.player-you
 div.player-opponent
   top: 20/$em
   left: 190/$em
+
+div.effect
+  position: absolute
+  width: 30/$em
+  height: 30/$em
+  color: $theme-red
+  span.value
+    font-size: 20/$em
+
+.effect-enter-setup
+  +transition(all 0.6s ease)
+  opacity: 0
+  +translateY(0)
+  &.effect-enter-start
+    +translateY(-50/$em)
+    opacity: 1
+
+.effect-leave-setup
+  +transition(all 0.6s ease)
+  opacity: 1
+  +translateY(-50/$em)
+  &.effect-leave-start
+    +translateY(-150/$em)
+    opacity: 0
+
+button.quit
+  position: absolute
+  bottom: 10/$em
+  right: 10/$em
