@@ -3,7 +3,7 @@
 
 Current Demon available at http://bit.ly/rpgbj
 
-**Special Thanks** to Graphics Floater *Iain Lew Kee* who did all the art and all the TOJam Volunteers and Sponsor who make this event possible.
+**Special Thanks** to Graphics Floater *Iain Lew Kee* who did all the art and all the TOJam Volunteers and Sponsors who make this event possible.
 
 #### Gameplay Concept
 A Vs. blackjack game in a turn based format. Take turns as the dealer and try to outscore your opponent without busting.
