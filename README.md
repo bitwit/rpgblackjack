@@ -1,7 +1,7 @@
 #RPG Blackjack
 ###  Developed for TOJam 8 within in 58 hour period
 
-Current Demon available at http://bit.ly/rpgbj
+Current Demo available at http://bit.ly/rpgbj
 
 **Special Thanks** to Graphics Floater *Iain Lew Kee* who did all the art and all the TOJam Volunteers and Sponsors who make this event possible.
 
